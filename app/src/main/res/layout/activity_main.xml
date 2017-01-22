@@ -14,4 +14,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="掌上东大APP" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/save_data"
+        android:text="进入保存学号密码"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

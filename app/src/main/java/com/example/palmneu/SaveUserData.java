@@ -11,7 +11,7 @@ public class SaveUserData extends AppCompatActivity {
 
     private EditText accountEdit;
     private EditText passwordEdit;
-    private Button login;
+    private Button save;
     private Button clear;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
@@ -24,11 +24,11 @@ public class SaveUserData extends AppCompatActivity {
         preferences=getSharedPreferences("userdata",MODE_PRIVATE);
         accountEdit=(EditText)findViewById(R.id.account);
         passwordEdit=(EditText)findViewById(R.id.password);
-        login=(Button)findViewById(R.id.login);
-        clear=(Button)findViewById(R.id.clear);
+        save=(Button)findViewById(R.id.save_data);
+        clear=(Button)findViewById(R.id.clear_data);
         accountEdit.setText(preferences.getString("account",""));
         passwordEdit.setText(preferences.getString("password",""));
-        login.setOnClickListener(new View.OnClickListener(){
+        save.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 String account=accountEdit.getText().toString();

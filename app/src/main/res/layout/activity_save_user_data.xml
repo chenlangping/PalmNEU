@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:id="@+id/activity_login"
+    android:id="@+id/activity_save_user_data"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.palmneu.SaveUserData">
@@ -16,13 +16,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textSize="18sp"
-            android:text="账户:"
-            android:hint="输入你的校园账号"/>
+            android:text="账户:" />
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/account"
+            android:hint="输入你的校园账号"
             android:layout_gravity="center_vertical"/>
     </LinearLayout>
 
@@ -35,7 +35,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textSize="18sp"
-            android:hint="输入登录教务处用的密码"
             android:text="密码"/>
         <EditText
             android:layout_width="0dp"
@@ -43,19 +42,21 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:inputType="textPassword"
+            android:hint="输入登录教务处用的密码"
             android:id="@+id/password"/>
     </LinearLayout>
 
 
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/login"
+        android:id="@+id/save_data"
         android:text="存储"/>
 
     <Button
-        android:text="清除"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/clear" />
+        android:id="@+id/clear_data"
+        android:text="清除"/>
+
 </LinearLayout>

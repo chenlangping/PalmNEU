@@ -20,5 +20,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button loginIn=(Button)findViewById(R.id.login_in);
+        loginIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,LoginIn.class);
+                startActivity(intent);
+            }
+        });
     }
 }

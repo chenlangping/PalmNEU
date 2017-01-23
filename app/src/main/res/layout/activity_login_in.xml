@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:id="@+id/activity_login_in"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.palmneu.LoginIn">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="18sp"
+            android:text="账户:" />
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/account"
+            android:hint="输入你的校园账号"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="18sp"
+            android:text="密码"/>
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:inputType="textPassword"
+            android:hint="输入登录教务处用的密码"
+            android:id="@+id/password"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/check_picture"
+        android:src="@drawable/chaiquan"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_in"
+        android:text="登录"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/response_text"/>
+    </ScrollView>
+</LinearLayout>

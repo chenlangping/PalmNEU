@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,6 +24,7 @@ public class LoginIn extends AppCompatActivity {
 
     private EditText accountEdit;
     private EditText passwordEdit;
+    private EditText checknumberEdit;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private Button login;
@@ -35,10 +37,8 @@ public class LoginIn extends AppCompatActivity {
     private final String NEU = "http://202.118.31.197";
     private final String BAIDU = "http://www.baidu.com";
     private String cookie = null;
-    private String picturesrc ="";
+    private String picturesrc = "";
     private String htmlcode = "";
-    private String pictureurl="";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,21 +48,29 @@ public class LoginIn extends AppCompatActivity {
         preferences = getSharedPreferences("userdata", MODE_PRIVATE);
         accountEdit = (EditText) findViewById(R.id.account);
         passwordEdit = (EditText) findViewById(R.id.password);
-        getPicture=(Button)findViewById(R.id.get_picture);
+        checknumberEdit=(EditText)findViewById(R.id.check_number);
+        getPicture = (Button) findViewById(R.id.get_picture);
         login = (Button) findViewById(R.id.login_in);
         responseText = (TextView) findViewById(R.id.response_text);
         imageView = (ImageView) findViewById(R.id.check_picture);
         accountEdit.setText(preferences.getString("account", ""));
         passwordEdit.setText(preferences.getString("password", ""));
         getcookieandpicturesrc();//获取cookie和验证码图片的地址
-        Log.d("LoginIn","clp1"+picturesrc);
-        Log.d("LoginIn","clp2"+cookie);
+        Log.d("LoginIn", "clp1" + picturesrc);
+        Log.d("LoginIn", "clp2" + cookie);
 
 
         getPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getPicture();
+            }
+        });
+
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginIn();
             }
         });
 
@@ -79,6 +87,7 @@ public class LoginIn extends AppCompatActivity {
                     URL url = new URL(NEU);
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
+                    connection.setRequestProperty("Cookie", cookie);
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
                     InputStream in = connection.getInputStream();
@@ -104,8 +113,8 @@ public class LoginIn extends AppCompatActivity {
                     picturesrc = htmlcode.substring(htmlcode.indexOf("ACTIONVALIDATERANDOMPICTURE"), htmlcode.indexOf("ACTIONVALIDATERANDOMPICTURE") + 64);
                     picturesrc = picturesrc.substring(0, picturesrc.indexOf("\""));
                     //showResponse(picturesrc);
-                    Log.d("LoginIn","clp1"+picturesrc);
-                    Log.d("LoginIn","clp2"+cookie);
+                    Log.d("LoginIn", "clp1" + picturesrc);
+                    Log.d("LoginIn", "clp2" + cookie);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -143,9 +152,10 @@ public class LoginIn extends AppCompatActivity {
                 Bitmap bitmap = null;
 
                 try {
-                    URL url = new URL(NEU+"/"+picturesrc);
+                    URL url = new URL(NEU + "/" + picturesrc);
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
+                    connection.setRequestProperty("Cookie", cookie);
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
                     InputStream in = connection.getInputStream();
@@ -162,7 +172,7 @@ public class LoginIn extends AppCompatActivity {
         }).start();
     }
 
-    private void showPicture(final Bitmap bitmap){
+    private void showPicture(final Bitmap bitmap) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -170,5 +180,54 @@ public class LoginIn extends AppCompatActivity {
                 //处理
             }
         });
+    }
+
+    private void loginIn() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                HttpURLConnection connection = null;
+                BufferedReader reader = null;
+                String param=null;
+                try {
+                    URL url = new URL("http://202.118.31.197/ACTIONLOGON.APPPROCESS?mode=");
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Cookie", cookie);
+                    connection.setRequestProperty("Referer","http://202.118.31.197/");
+                    DataOutputStream out=new DataOutputStream(connection.getOutputStream());
+                    out.writeBytes("WebUserNO=20144837&Password=214365879&Agnomen="+checknumberEdit.getText().toString()+"&submit7=%B5%C7%C2%BC");
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+
+                    InputStream in = connection.getInputStream();
+                    Log.d("LoginIn","clp"+String.valueOf(connection.getResponseCode()));
+                    reader = new BufferedReader(new InputStreamReader(in));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    htmlcode = response.toString();
+                    showResponse(htmlcode);
+                    Log.d("LoginIn","clp code="+htmlcode);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
+                }
+            }
+        }).start();
     }
 }

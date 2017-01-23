@@ -29,6 +29,7 @@ public class LoginIn extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private Button login;
     private Button getPicture;
+    private Button getGrade;
     private ImageView imageView;
     private URL url;
     private HttpURLConnection connection;
@@ -48,9 +49,10 @@ public class LoginIn extends AppCompatActivity {
         preferences = getSharedPreferences("userdata", MODE_PRIVATE);
         accountEdit = (EditText) findViewById(R.id.account);
         passwordEdit = (EditText) findViewById(R.id.password);
-        checknumberEdit=(EditText)findViewById(R.id.check_number);
+        checknumberEdit = (EditText) findViewById(R.id.check_number);
         getPicture = (Button) findViewById(R.id.get_picture);
         login = (Button) findViewById(R.id.login_in);
+        getGrade = (Button) findViewById(R.id.get_grade);
         responseText = (TextView) findViewById(R.id.response_text);
         imageView = (ImageView) findViewById(R.id.check_picture);
         accountEdit.setText(preferences.getString("account", ""));
@@ -74,6 +76,12 @@ public class LoginIn extends AppCompatActivity {
             }
         });
 
+        getGrade.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getGrade();
+            }
+        });
 
     }
 
@@ -189,20 +197,22 @@ public class LoginIn extends AppCompatActivity {
 
                 HttpURLConnection connection = null;
                 BufferedReader reader = null;
-                String param=null;
+                String param = null;
                 try {
                     URL url = new URL("http://202.118.31.197/ACTIONLOGON.APPPROCESS?mode=");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Cookie", cookie);
-                    connection.setRequestProperty("Referer","http://202.118.31.197/");
-                    DataOutputStream out=new DataOutputStream(connection.getOutputStream());
-                    out.writeBytes("WebUserNO=20144837&Password=214365879&Agnomen="+checknumberEdit.getText().toString()+"&submit7=%B5%C7%C2%BC");
+                    connection.setRequestProperty("Referer", "http://202.118.31.197/");
+                    DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+                    String WebUserNO = accountEdit.getText().toString();
+                    String Password = passwordEdit.getText().toString();
+                    String Agnomen = checknumberEdit.getText().toString();
+                    out.writeBytes("WebUserNO=" + WebUserNO + "&Password=" + Password + "&Agnomen=" + checknumberEdit.getText().toString() + "&submit7=%B5%C7%C2%BC");
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
-
                     InputStream in = connection.getInputStream();
-                    Log.d("LoginIn","clp"+String.valueOf(connection.getResponseCode()));
+                    Log.d("LoginIn", "clp" + String.valueOf(connection.getResponseCode()));
                     reader = new BufferedReader(new InputStreamReader(in));
                     StringBuilder response = new StringBuilder();
                     String line;
@@ -211,7 +221,7 @@ public class LoginIn extends AppCompatActivity {
                     }
                     htmlcode = response.toString();
                     showResponse(htmlcode);
-                    Log.d("LoginIn","clp code="+htmlcode);
+                    Log.d("LoginIn", "clp code=" + htmlcode);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -230,4 +240,50 @@ public class LoginIn extends AppCompatActivity {
             }
         }).start();
     }
+
+    private void getGrade() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+                BufferedReader reader = null;
+
+                try {
+                    URL url = new URL("http://202.118.31.197/ACTIONQUERYSTUDENTSCORE.APPPROCESS");
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setRequestProperty("Cookie", cookie);
+                    connection.setRequestProperty("Referer", " http://202.118.31.197/Menu.jsp?UserType=BASE_STUDENT");
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+                    InputStream in = connection.getInputStream();
+                    Log.d("LoginIn", "clp" + String.valueOf(connection.getResponseCode()));
+                    reader = new BufferedReader(new InputStreamReader(in));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    htmlcode = response.toString();
+                    showResponse(htmlcode);
+                    Log.d("LoginIn", "clp code=" + htmlcode);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
+                }
+            }
+        }).start();
+    }
+
 }

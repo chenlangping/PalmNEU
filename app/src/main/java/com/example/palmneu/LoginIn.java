@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,7 +24,6 @@ public class LoginIn extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private Button login;
-    private Button getPicture;
     private ImageView imageView;
     private URL url;
     private HttpURLConnection connection;
@@ -48,25 +45,13 @@ public class LoginIn extends AppCompatActivity {
         preferences = getSharedPreferences("userdata", MODE_PRIVATE);
         accountEdit = (EditText) findViewById(R.id.account);
         passwordEdit = (EditText) findViewById(R.id.password);
-        getPicture=(Button)findViewById(R.id.get_picture);
         login = (Button) findViewById(R.id.login_in);
         responseText = (TextView) findViewById(R.id.response_text);
         imageView = (ImageView) findViewById(R.id.check_picture);
         accountEdit.setText(preferences.getString("account", ""));
         passwordEdit.setText(preferences.getString("password", ""));
         getcookieandpicturesrc();//获取cookie和验证码图片的地址
-        Log.d("LoginIn","clp1"+picturesrc);
-        Log.d("LoginIn","clp2"+cookie);
-
-
-        getPicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getPicture();
-            }
-        });
-
-
+        getPicture();
     }
 
     private void getcookieandpicturesrc() {
@@ -104,8 +89,7 @@ public class LoginIn extends AppCompatActivity {
                     picturesrc = htmlcode.substring(htmlcode.indexOf("ACTIONVALIDATERANDOMPICTURE"), htmlcode.indexOf("ACTIONVALIDATERANDOMPICTURE") + 64);
                     picturesrc = picturesrc.substring(0, picturesrc.indexOf("\""));
                     //showResponse(picturesrc);
-                    Log.d("LoginIn","clp1"+picturesrc);
-                    Log.d("LoginIn","clp2"+cookie);
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -143,7 +127,8 @@ public class LoginIn extends AppCompatActivity {
                 Bitmap bitmap = null;
 
                 try {
-                    URL url = new URL(NEU+"/"+picturesrc);
+                    pictureurl=NEU+"/"+picturesrc;
+                    URL url = new URL("http://202.118.31.197/ACTIONVALIDATERANDOMPICTURE.APPPROCESS?id=9.377868860400651");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setConnectTimeout(8000);
@@ -151,6 +136,7 @@ public class LoginIn extends AppCompatActivity {
                     InputStream in = connection.getInputStream();
                     bitmap = BitmapFactory.decodeStream(in);
                     showPicture(bitmap);
+                    showResponse(picturesrc);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

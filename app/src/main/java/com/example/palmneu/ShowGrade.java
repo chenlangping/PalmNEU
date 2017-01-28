@@ -79,7 +79,7 @@ public class ShowGrade extends AppCompatActivity {
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
                     in = connection.getInputStream();
-                    reader = new BufferedReader(new InputStreamReader(in));
+                    reader = new BufferedReader(new InputStreamReader(in,"GBK"));
                     StringBuilder response = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) {

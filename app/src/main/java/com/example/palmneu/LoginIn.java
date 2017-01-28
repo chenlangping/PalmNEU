@@ -112,8 +112,8 @@ public class LoginIn extends AppCompatActivity {
                     picturesrc = htmlcode.substring(htmlcode.indexOf("ACTIONVALIDATERANDOMPICTURE"), htmlcode.indexOf("ACTIONVALIDATERANDOMPICTURE") + 64);
                     picturesrc = picturesrc.substring(0, picturesrc.indexOf("\""));
                     //showResponse(picturesrc);
-                    Log.d("LoginIn", "clp1" + picturesrc);
-                    Log.d("LoginIn", "clp2" + cookie);
+                    Log.d("LoginIn", "clp图片的地址" + picturesrc);
+                    Log.d("LoginIn", "clpcookie值为 " + cookie);
 
                 } catch (Exception e) {
                     e.printStackTrace();

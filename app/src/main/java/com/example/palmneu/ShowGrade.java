@@ -6,11 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -26,6 +32,7 @@ public class ShowGrade extends AppCompatActivity {
     private BufferedReader reader = null;
     private URL url = null;
     private InputStream in=null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +93,11 @@ public class ShowGrade extends AppCompatActivity {
                         response.append(line);
                     }
                     htmlcode = response.toString();
-                    showResponse(htmlcode);
-                    Log.d("LoginIn", "clp code=" + htmlcode);
+
+                    //htmlcode=htmlcode.substring(htmlcode.indexOf("<td nowrap>&nbsp;"),htmlcode.length());
+                    //showResponse(htmlcode);
+                    showResponse(parseCodeWithJsoup(htmlcode));
+                    Log.d("ShowGrade", "clp code=" + htmlcode);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -114,5 +124,53 @@ public class ShowGrade extends AppCompatActivity {
                 gradeText.setText(response);
             }
         });
+    }
+
+    private void parseHTMLCode(String htmlcode){
+        htmlcode="<a>edrew<tr>123<li>哈哈哈</li>123</tr>";
+        try{
+            XmlPullParserFactory factory=XmlPullParserFactory.newInstance();
+            XmlPullParser xmlPullParser=factory.newPullParser();
+            xmlPullParser.setInput(new StringReader(htmlcode));
+            int eventType=xmlPullParser.getEventType();
+            String name=null;
+            String grade=null;
+            while(eventType!=XmlPullParser.END_DOCUMENT){
+                String nodeName=xmlPullParser.getName();
+                Log.d("ShowGrade","clp nodename="+nodeName);
+                switch (eventType){
+                    case XmlPullParser.START_TAG:{
+                        if("td".equals(nodeName)){
+                            name=xmlPullParser.nextText();
+                        }
+                        break;
+                    }
+                    case XmlPullParser.END_TAG:{
+                        if("tr".equals(nodeName)){
+                            Log.d("ShowGrade","clp name="+name);
+                        }
+
+                        break;
+                    }
+                    default:break;
+                }
+                eventType=xmlPullParser.next();
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private String parseCodeWithJsoup(final String htmlcode){
+        String parsedCode="";
+        try {
+            Document doc = Jsoup.parse(htmlcode);
+            String tr=doc.getElementsByTag("tr").text();
+            parsedCode=parsedCode+tr;
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        return parsedCode;
     }
 }

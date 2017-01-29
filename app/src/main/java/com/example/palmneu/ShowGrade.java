@@ -2,12 +2,19 @@ package com.example.palmneu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -32,6 +39,9 @@ public class ShowGrade extends AppCompatActivity {
     private BufferedReader reader = null;
     private URL url = null;
     private InputStream in=null;
+    private ListView listView=null;
+    private Button button=null;
+    private ArrayAdapter<String>adapter=null;
 
 
     @Override
@@ -43,8 +53,10 @@ public class ShowGrade extends AppCompatActivity {
         WebUserNO = intent.getStringExtra("WebUserNO");
         Password = intent.getStringExtra("Password");
         Agnomen = intent.getStringExtra("Agnomen");
-        gradeText = (TextView) findViewById(R.id.show_grade_text);
+        listView=(ListView)findViewById(R.id.list_view);
         getGrade();
+
+
     }
 
     private void getGrade() {
@@ -96,7 +108,10 @@ public class ShowGrade extends AppCompatActivity {
 
                     //htmlcode=htmlcode.substring(htmlcode.indexOf("<td nowrap>&nbsp;"),htmlcode.length());
                     //showResponse(htmlcode);
-                    showResponse(parseCodeWithJsoup(htmlcode));
+
+
+                    showGradeInListView();
+
                     Log.d("ShowGrade", "clp code=" + htmlcode);
 
                 } catch (Exception e) {
@@ -115,6 +130,7 @@ public class ShowGrade extends AppCompatActivity {
                 }
             }
         }).start();
+
     }
 
     private void showResponse(final String response) {
@@ -164,13 +180,70 @@ public class ShowGrade extends AppCompatActivity {
 
     private String parseCodeWithJsoup(final String htmlcode){
         String parsedCode="";
+        String []course=null;
         try {
             Document doc = Jsoup.parse(htmlcode);
-            String tr=doc.getElementsByTag("tr").text();
-            parsedCode=parsedCode+tr;
+            //String class1=doc.select("tr.color-rowNext > td").text();
+            //parsedCode=parsedCode+class1;
+            //String class2=doc.getElementsByClass("color-row").text();
+            //parsedCode=parsedCode+class2;
+            Elements elements=doc.select("tr.color-rowNext > td");
+            for(Element element:elements){
+                String name=element.text();
+                parsedCode=parsedCode+name+";";
+            }
+            elements=doc.select("tr.color-row > td");
+            for(Element element:elements) {
+                String name = element.text();
+                parsedCode = parsedCode + name + ";";
+            }
+
+            course=parsedCode.split(";");
+            Log.d("clp","clp"+course.length);
+            for(int i=0;i<course.length;i++){
+                Log.d("clp","clp"+course[i]);
+            }
+
+
         }catch(Exception e) {
             e.printStackTrace();
         }
         return parsedCode;
     }
+
+    private void showGradeInListView(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String [] parsedCode=parseCodeWithJsoup(htmlcode).split(";");
+                String [] course = new String[2*parsedCode.length/11];
+                int j=0;
+                for(int i=0;i<parsedCode.length;i++){
+                    if(i%11==2){
+                        course[j]=parsedCode[i];
+                        j++;
+                    }
+                    if(i%11==10){
+                        course[j]=parsedCode[i];
+                        j++;
+                    }
+                }
+                adapter=new ArrayAdapter<String>(ShowGrade.this,android.R.layout.simple_list_item_1,course);
+                listView.setAdapter(adapter);
+            }
+        });
+    }
+
+    private Handler handler=new Handler(){
+        public void handleMessage(Message msg){
+            switch (msg.what){
+                case 1:
+                    String [] parsedCode=parseCodeWithJsoup(htmlcode).split(";");
+                    adapter=new ArrayAdapter<String>(ShowGrade.this,android.R.layout.simple_list_item_1,parsedCode);
+                    listView.setAdapter(adapter);
+                    break;
+                default:break;
+            }
+        }
+    };
 }

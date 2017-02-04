@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.palmneu">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -21,7 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SaveUserData" />
-        <activity android:name=".LoginIn"></activity>
+        <activity android:name=".LoginIn" />
+        <activity android:name=".ShowGrade"></activity>
     </application>
 
 </manifest>

@@ -22,7 +22,8 @@
         </activity>
         <activity android:name=".SaveUserData" />
         <activity android:name=".LoginIn" />
-        <activity android:name=".ShowGrade"></activity>
+        <activity android:name=".ShowGrade" />
+        <activity android:name=".Map"></activity>
     </application>
 
 </manifest>

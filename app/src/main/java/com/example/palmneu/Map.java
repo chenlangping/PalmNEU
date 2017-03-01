@@ -103,9 +103,9 @@ public class Map extends AppCompatActivity {
 
     private void initLocation(){
         LocationClientOption option=new LocationClientOption();
-        //option.setScanSpan(5000);//5秒更新一次位置
-        //option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//高精度定位，有GPS则用GPS，否则用网络定位
-        //option.setIsNeedAddress(true);
+        option.setScanSpan(5000);//5秒更新一次位置
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//高精度定位，有GPS则用GPS，否则用网络定位
+        option.setIsNeedAddress(true);
         mLocationClient.setLocOption(option);
     }
 
@@ -114,7 +114,6 @@ public class Map extends AppCompatActivity {
         mLocationClient.stop();
         mapView.onDestroy();
         baiduMap.setMyLocationEnabled(false);
-        isFirstLocate=true;
     }
 
     private void requestLocation(){
@@ -148,13 +147,13 @@ public class Map extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //mapView.onResume();
+        mapView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //mapView.onPause();
+        mapView.onPause();
     }
 
     public class MyLocationListener implements BDLocationListener {

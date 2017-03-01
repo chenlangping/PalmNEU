@@ -38,5 +38,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button wifilogin=(Button)findViewById(R.id.wifi_login);
+        wifilogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,WifiLoginIn.class);
+                startActivity(intent);
+            }
+        });
     }
+
+
 }

@@ -10,4 +10,5 @@ public class Friend extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend);
     }
+
 }

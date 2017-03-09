@@ -59,6 +59,8 @@ public class WifiLoginIn extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                account=accoutEdit.getText().toString();
+                password=passwordEdit.getText().toString();
                 if (rememberPass.isChecked()) {//如果被选中了
                     editor.putString("ipgwaccount", account);
                     editor.putString("ipgwpassword", password);

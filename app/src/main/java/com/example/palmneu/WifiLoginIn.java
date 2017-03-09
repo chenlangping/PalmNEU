@@ -8,7 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -18,52 +21,90 @@ import okhttp3.Response;
 
 public class WifiLoginIn extends AppCompatActivity {
 
-    TextView textView = null;
-    private SharedPreferences preferences;
-    private SharedPreferences.Editor editor;
-    EditText accoutEdit;
-    EditText passwordEdit;
+    //控制账号密码的保存
+    private SharedPreferences preferences = null;
+    private SharedPreferences.Editor editor = null;
+
+    //对用户进行信息提示
+    private TextView textView = null;
+
+    //账号输入框和密码输入框
+    private EditText accoutEdit = null;
+    private EditText passwordEdit = null;
+
+    //账号与密码
     String account = null;
     String password = null;
+
+    //“记住密码”那一栏
     CheckBox rememberPass;
+
+    //中间的小圆圈
+    ProgressBar progressBar;
+
+    //两个按钮，登录为button，断开连接为button1
+    Button button = null;
+    Button button1 = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wifi_login_in);
-        textView = (TextView) findViewById(R.id.wifi_login_in);
-        accoutEdit = (EditText) findViewById(R.id.account);
-        passwordEdit = (EditText) findViewById(R.id.password);
-        rememberPass = (CheckBox) findViewById(R.id.remember_pass);
-        editor = getSharedPreferences("userdata", MODE_PRIVATE).edit();
-        preferences = getSharedPreferences("userdata", MODE_PRIVATE);
-        account = preferences.getString("ipgwaccount", "");
-        password = preferences.getString("ipgwpassword", "");
-        accoutEdit.setText(account);
-        passwordEdit.setText(password);
+        initView();
 
-        Log.d("clp", account + password);
+        Log.d("clp", "account=" + account + "\n");
+        Log.d("clp", "password=" + password + "\n");
 
-        Button button = (Button) findViewById(R.id.connect_ipgw);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                account = accoutEdit.getText().toString();
-                password = passwordEdit.getText().toString();
+                account=accoutEdit.getText().toString();
+                password=passwordEdit.getText().toString();
                 if (rememberPass.isChecked()) {//如果被选中了
                     editor.putString("ipgwaccount", account);
                     editor.putString("ipgwpassword", password);
-                    //把它们放入文件中
+                    editor.apply();
+                    //把它们放入"userdata"中
                 }
-                Log.d("clp", "account=" + account);
-                Log.d("clp", "password=" + password);
+
+                //清空textView
+                textViewclear();
+
+                //让小圆圈显现
+                progressBar.setVisibility(View.VISIBLE);
+
+                //测试是否能够连接上ip网关
+                testIPGW();
+
+                //这一步是一定会执行的，只是如果无法连接到校园网的话就无法更新控件
+                //TODO 这样子做可能会存在连接一直存在的问题
                 connectWifi();
             }
         });
 
+
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //清除TextView
+                textViewclear();
+
+                //让小圆圈显示
+                progressBar.setVisibility(View.VISIBLE);
+
+                //测试能否连接到ip网关
+                testIPGW();
+
+                //断网
+                disconnectWifi();
+            }
+        });
+
+
     }
 
-    private void connectWifi() {
+    private void connectWifi() {//连接校园网
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -153,10 +194,14 @@ public class WifiLoginIn extends AppCompatActivity {
         }).start();
     }
 
-    private void showResponse(final String[] ipgwInfo) {
+    private void showResponse(final String[] ipgwInfo) {//把正确的结果显示给用户
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+                textView.setText("");
+                progressBar.setVisibility(View.GONE);
+
                 float liuliang = Float.parseFloat(ipgwInfo[0]);
                 liuliang = liuliang / (1024 * 1024);
                 Log.d("clp", "流量：" + liuliang + "M");
@@ -176,12 +221,119 @@ public class WifiLoginIn extends AppCompatActivity {
         });
     }
 
-    private void passwordWrong() {
+    private void passwordWrong() {//提示用户密码错误
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                progressBar.setVisibility(View.GONE);
                 textView.setText("密码错误！");
             }
         });
+    }
+
+    private void disconnectWifi() {//断开连接
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody requestBody = new FormBody.Builder()
+                            .add("action", "logout")
+                            .add("ajax", "1")
+                            .add("username", account)
+                            .add("password", password)
+                            .build();
+                    Request request = new Request.Builder()
+                            .url("https://ipgw.neu.edu.cn/include/auth_action.php")
+                            .post(requestBody)
+                            .build();
+
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
+                    Log.d("clp", "responseData=" + responseData);
+                    if (responseData.equals("网络已断开")) {
+                        //成功断网
+                        disconnectOk();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void disconnectOk() {//成功断网
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText("网络已经断开!");
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void testIPGW() {//测试能否连接上ip网关
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(5, TimeUnit.SECONDS)
+                            .build();
+                    client.connectTimeoutMillis();
+                    Request request = new Request.Builder()
+                            .url("https://ipgw.neu.edu.cn/srun_portal_pc.php?url=&ac_id=1")
+                            .build();
+                    Response response = client.newCall(request).execute();
+
+                } catch (Exception e) {
+                    cannotConnectToIPGW();//超时处理
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void cannotConnectToIPGW() {//提示用户无法连接到校园网
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.GONE);
+                textView.setText("无法连接到ip网关");
+            }
+        });
+    }
+
+    private void textViewclear() {//清空textView
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText("");
+            }
+        });
+    }
+
+    private void initView() {//进行控件初始化
+        textView = (TextView) findViewById(R.id.wifi_login_in);
+        accoutEdit = (EditText) findViewById(R.id.account);
+        passwordEdit = (EditText) findViewById(R.id.password);
+        rememberPass = (CheckBox) findViewById(R.id.remember_pass);
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+
+        //找到"userdata"文件，并且从中读取"ipgwaccount"和"ipgwpassword"键所对应的值，并把它们赋值给account与password
+        editor = getSharedPreferences("userdata", MODE_PRIVATE).edit();
+        preferences = getSharedPreferences("userdata", MODE_PRIVATE);
+        account = preferences.getString("ipgwaccount", "");
+        password = preferences.getString("ipgwpassword", "");
+
+        //设置好账号与密码栏的初始值
+        accoutEdit.setText(account);
+        passwordEdit.setText(password);
+
+        //按钮绑定
+        button = (Button) findViewById(R.id.connect_ipgw);
+        button1 = (Button) findViewById(R.id.disconnect_ipgw);
     }
 }

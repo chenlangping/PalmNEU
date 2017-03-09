@@ -61,6 +61,8 @@ public class WifiLoginIn extends AppCompatActivity {
             public void onClick(View v) {
                 account=accoutEdit.getText().toString();
                 password=passwordEdit.getText().toString();
+                Log.d("clp", "account=" + account + "\n");
+                Log.d("clp", "password=" + password + "\n");
                 if (rememberPass.isChecked()) {//如果被选中了
                     editor.putString("ipgwaccount", account);
                     editor.putString("ipgwpassword", password);
@@ -87,6 +89,19 @@ public class WifiLoginIn extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                account=accoutEdit.getText().toString();
+                password=passwordEdit.getText().toString();
+
+                Log.d("clp", "account=" + account + "\n");
+                Log.d("clp", "password=" + password + "\n");
+
+                if (rememberPass.isChecked()) {//如果被选中了
+                    editor.putString("ipgwaccount", account);
+                    editor.putString("ipgwpassword", password);
+                    editor.apply();
+                    //把它们放入"userdata"中
+                }
                 //清除TextView
                 textViewclear();
 
@@ -255,6 +270,9 @@ public class WifiLoginIn extends AppCompatActivity {
                     if (responseData.equals("网络已断开")) {
                         //成功断网
                         disconnectOk();
+                    }else if (responseData.indexOf("注销失败") != -1) {
+                        //密码错误
+                        passwordWrong();
                     }
 
                 } catch (Exception e) {

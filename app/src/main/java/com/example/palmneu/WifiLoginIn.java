@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.concurrent.TimeUnit;
 
@@ -232,6 +233,9 @@ public class WifiLoginIn extends AppCompatActivity {
                 Log.d("clp", "ip地址：" + IPAddress);
 
                 textView.setText("连接成功！\n" + "已用流量：" + liuliang + "M" + "\n" + "在线时长：" + zaixianshichang + "小时" + "\n" + "余额：" + yue + "元" + "\n" + "ip地址：" + IPAddress);
+
+
+                Toast.makeText(WifiLoginIn.this,"成功联网!已使用"+(float)(Math.round((liuliang/1024)*100))/100 +"G流量",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -242,6 +246,7 @@ public class WifiLoginIn extends AppCompatActivity {
             public void run() {
                 progressBar.setVisibility(View.GONE);
                 textView.setText("密码错误！");
+                Toast.makeText(WifiLoginIn.this,"密码错误",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -288,6 +293,7 @@ public class WifiLoginIn extends AppCompatActivity {
             public void run() {
                 textView.setText("网络已经断开!");
                 progressBar.setVisibility(View.GONE);
+                Toast.makeText(WifiLoginIn.this,"网络已经断开",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -320,6 +326,7 @@ public class WifiLoginIn extends AppCompatActivity {
             public void run() {
                 progressBar.setVisibility(View.GONE);
                 textView.setText("无法连接到ip网关");
+                Toast.makeText(WifiLoginIn.this,"无法连接到ip网关",Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -2,8 +2,6 @@ package com.example.palmneu;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -15,15 +13,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -32,8 +27,8 @@ public class ShowGrade extends AppCompatActivity {
     private String cookie = null;
     private String WebUserNO = null;
     private String Password = null;
-    private String Agnomen = null;
-    private String htmlcode = null;
+    private String Agnomen = null;//验证码
+    private String htmlcode = null;//返回的HTML代码
     private TextView gradeText = null;
     private HttpURLConnection connection = null;
     private BufferedReader reader = null;
@@ -142,50 +137,13 @@ public class ShowGrade extends AppCompatActivity {
         });
     }
 
-    private void parseHTMLCode(String htmlcode){
-        htmlcode="<a>edrew<tr>123<li>哈哈哈</li>123</tr>";
-        try{
-            XmlPullParserFactory factory=XmlPullParserFactory.newInstance();
-            XmlPullParser xmlPullParser=factory.newPullParser();
-            xmlPullParser.setInput(new StringReader(htmlcode));
-            int eventType=xmlPullParser.getEventType();
-            String name=null;
-            String grade=null;
-            while(eventType!=XmlPullParser.END_DOCUMENT){
-                String nodeName=xmlPullParser.getName();
-                Log.d("ShowGrade","clp nodename="+nodeName);
-                switch (eventType){
-                    case XmlPullParser.START_TAG:{
-                        if("td".equals(nodeName)){
-                            name=xmlPullParser.nextText();
-                        }
-                        break;
-                    }
-                    case XmlPullParser.END_TAG:{
-                        if("tr".equals(nodeName)){
-                            Log.d("ShowGrade","clp name="+name);
-                        }
-
-                        break;
-                    }
-                    default:break;
-                }
-                eventType=xmlPullParser.next();
-
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
     private String parseCodeWithJsoup(final String htmlcode){
         String parsedCode="";
         String []course=null;
         try {
             Document doc = Jsoup.parse(htmlcode);
-            //String class1=doc.select("tr.color-rowNext > td").text();
-            //parsedCode=parsedCode+class1;
-            //String class2=doc.getElementsByClass("color-row").text();
+
             //parsedCode=parsedCode+class2;
             Elements elements=doc.select("tr.color-rowNext > td");
             for(Element element:elements){
@@ -234,16 +192,4 @@ public class ShowGrade extends AppCompatActivity {
         });
     }
 
-    private Handler handler=new Handler(){
-        public void handleMessage(Message msg){
-            switch (msg.what){
-                case 1:
-                    String [] parsedCode=parseCodeWithJsoup(htmlcode).split(";");
-                    adapter=new ArrayAdapter<String>(ShowGrade.this,android.R.layout.simple_list_item_1,parsedCode);
-                    listView.setAdapter(adapter);
-                    break;
-                default:break;
-            }
-        }
-    };
 }

@@ -306,7 +306,7 @@ public class WifiLoginIn extends AppCompatActivity {
                     OkHttpClient client = new OkHttpClient.Builder()
                             .connectTimeout(5, TimeUnit.SECONDS)
                             .build();
-                    client.connectTimeoutMillis();
+                    //client.connectTimeoutMillis();
                     Request request = new Request.Builder()
                             .url("https://ipgw.neu.edu.cn/srun_portal_pc.php?url=&ac_id=1")
                             .build();

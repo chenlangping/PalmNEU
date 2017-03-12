@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.InputStream;
@@ -34,6 +35,8 @@ public class LoginIn extends AppCompatActivity {
 
     private Button getPicture;//获取验证码按钮
     private Button getGrade;//获取成绩按钮
+
+    private ProgressBar progressBar;//小圈圈
 
     private ImageView imageView;//图片控件
     private String cookie=null;//保存cookie
@@ -86,6 +89,7 @@ public class LoginIn extends AppCompatActivity {
         checkNumberEdit = (EditText) findViewById(R.id.check_number);
         getPicture = (Button) findViewById(R.id.get_picture);
         getGrade = (Button) findViewById(R.id.get_grade);
+        progressBar=(ProgressBar)findViewById(R.id.progressbar);
         imageView = (ImageView) findViewById(R.id.check_picture);
         accountEdit.setText(preferences.getString("account", ""));
         passwordEdit.setText(preferences.getString("password", ""));
@@ -171,6 +175,8 @@ public class LoginIn extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                progressBar.setVisibility(View.GONE);
+                imageView.setVisibility(View.VISIBLE);
                 imageView.setImageBitmap(bitmap);
             }
         });

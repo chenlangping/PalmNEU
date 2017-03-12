@@ -37,7 +37,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SaveUserData" />
-        <activity android:name=".LoginIn" />
+        <activity android:name=".LoginIn"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ShowGrade" />
         <activity android:name=".Map" />
 

@@ -16,8 +16,10 @@ import android.widget.Toast;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -39,6 +41,10 @@ public class LoginIn extends AppCompatActivity {
     private int TIME_OUT=5; //超时时间设置
     private Bitmap bitmap=null; //验证码图片
 
+    String WebUserNO;
+    String Password;
+    String Agnomen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,16 +65,13 @@ public class LoginIn extends AppCompatActivity {
         getGrade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String WebUserNO = accountEdit.getText().toString();
-                String Password = passwordEdit.getText().toString();
-                String Agnomen = checkNumberEdit.getText().toString();
-                Intent intent = new Intent(LoginIn.this, ShowGrade.class);
-                intent.putExtra("cookie", cookie);
-                intent.putExtra("WebUserNO", WebUserNO);
-                intent.putExtra("Password", Password);
-                intent.putExtra("Agnomen", Agnomen);
-                startActivity(intent);
-                //把获取到的用户名，密码，验证码以及cookie传给下一个活动。
+                WebUserNO = accountEdit.getText().toString();
+                Password = passwordEdit.getText().toString();
+                Agnomen = checkNumberEdit.getText().toString();
+
+                judgeLoginInfomation();
+
+
             }
         });
 
@@ -128,7 +131,7 @@ public class LoginIn extends AppCompatActivity {
 
                 } catch (Exception e) {
 
-                    netWorkIsOff();
+                    ToastShow("无法连接到教务处");
                     //超时处理
                     e.printStackTrace();
                 }
@@ -158,7 +161,7 @@ public class LoginIn extends AppCompatActivity {
                     showPicture(bitmap);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    netWorkIsOff();
+                    ToastShow("无法连接到教务处");
                 }
             }
         }).start();
@@ -173,15 +176,61 @@ public class LoginIn extends AppCompatActivity {
         });
     }
 
-    private void netWorkIsOff() {
+
+    private void judgeLoginInfomation(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody requestBody = new FormBody.Builder()
+                            .add("WebUserNO", WebUserNO)
+                            .add("Password", Password)
+                            .add("Agnomen", Agnomen)
+                            .add("submit7", "%B5%C7%C2%BC")
+                            .build();
+
+                    Request request = new Request.Builder()
+                            .url("http://202.118.31.197/ACTIONLOGON.APPPROCESS?mode=")
+                            .addHeader("Cookie", cookie)
+                            .addHeader("Referer", "http://202.118.31.197")
+                            .post(requestBody)
+                            .build();
+
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
+                    Log.d("clp", "data1=\n" + responseData);
+
+                    if (responseData.indexOf("请输入正确的附加码") != -1) {
+                        ToastShow("请输入正确的附加码");
+                    } else if (responseData.indexOf("您的密码错误了1次，共3次错误机会！") != -1) {
+                        ToastShow("您的密码错误了1次，共3次错误机会！");
+                    } else if (responseData.indexOf("您的密码错误了2次，共3次错误机会！") != -1) {
+                        ToastShow("您的密码错误了2次，共3次错误机会！");
+                    } else if (responseData.indexOf("您的密码错误了3次，共3次错误机会！") != -1) {
+                        ToastShow("您的密码错误了3次，共3次错误机会！");
+                    } else if (responseData.indexOf("密码错误次数超限，锁定登录5分钟！") != -1) {
+                        ToastShow("密码错误次数超限，锁定登录5分钟！");
+                    }else {
+                        Intent intent = new Intent(LoginIn.this, ShowGrade.class);
+                        intent.putExtra("cookie", cookie);
+                        startActivity(intent);
+                        //把验证成功的cookie传给下一个活动。
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void ToastShow(final String string){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(LoginIn.this,"无法连接到教务处网站",Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginIn.this,string,Toast.LENGTH_SHORT).show();
             }
         });
     }
-
-
 
 }

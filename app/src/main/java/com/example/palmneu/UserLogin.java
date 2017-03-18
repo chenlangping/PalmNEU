@@ -23,7 +23,6 @@ public class UserLogin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //执行登录操作
-                int a=10;
             }
         });
 

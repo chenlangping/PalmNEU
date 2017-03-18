@@ -30,6 +30,7 @@ public class UserLogin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //执行注册操作
+                //这里需要一个新的活动
             }
         });
     }

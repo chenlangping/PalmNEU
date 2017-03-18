@@ -3,6 +3,12 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 24
     buildToolsVersion "25.0.2"
+
+    aaptOptions {
+        cruncherEnabled = false
+        useNewCruncher = false
+    }//解决图片问题
+
     defaultConfig {
         applicationId "com.example.palmneu"
         minSdkVersion 15
@@ -33,3 +39,5 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
 }
+
+

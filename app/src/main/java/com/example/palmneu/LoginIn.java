@@ -11,36 +11,77 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class LoginIn extends AppCompatActivity {
 
-    private EditText accountEdit;
-    private EditText passwordEdit;
-    private EditText checkNumberEdit;
-    private SharedPreferences preferences;
+    private EditText accountEdit;//账号编辑框
+    private EditText passwordEdit;//密码编辑框
+    private EditText checkNumberEdit;//验证码编辑框
+
+    private SharedPreferences preferences;//读取文件
     private SharedPreferences.Editor editor;
-    private Button getPicture;
-    private Button getGrade;
-    private ImageView imageView;
-    private URL url;
-    private HttpURLConnection connection;
-    private BufferedReader reader;
-    private final String NEU = "http://202.118.31.197";
-    private String cookie = null;
-    private String picturesrc = null;
-    private String htmlcode = null;
+
+    private Button getPicture;//获取验证码按钮
+    private Button getGrade;//获取成绩按钮
+
+    private ProgressBar progressBar;//小圈圈
+
+    private ImageView imageView;//图片控件
+    private String cookie=null;//保存cookie
+    private String picturesrc;//保存图片地址
+    private int TIME_OUT=5; //超时时间设置
+    private Bitmap bitmap=null; //验证码图片
+
+    String WebUserNO;
+    String Password;
+    String Agnomen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_in);
+
+        initView();//初始化控件
+        getCookieAndPictureSrc();//获取cookie和验证码图片的地址
+
+        getPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getCookieAndPictureSrc();
+                //getPicture();
+                //此处不要使用getPicture()，否则在先断网的情况下进入该页面，之后在恢复网络并点击按钮，仍然会提示用户没有网络，这是因为根本没有图片地址获取到
+            }
+        });
+
+        getGrade.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WebUserNO = accountEdit.getText().toString();
+                Password = passwordEdit.getText().toString();
+                Agnomen = checkNumberEdit.getText().toString();
+
+                judgeLoginInfomation();
+
+
+            }
+        });
+
+    }
+
+    private void initView(){//初始化所有的组件
+
         editor = getSharedPreferences("userdata", MODE_PRIVATE).edit();
         preferences = getSharedPreferences("userdata", MODE_PRIVATE);
         accountEdit = (EditText) findViewById(R.id.account);
@@ -48,114 +89,83 @@ public class LoginIn extends AppCompatActivity {
         checkNumberEdit = (EditText) findViewById(R.id.check_number);
         getPicture = (Button) findViewById(R.id.get_picture);
         getGrade = (Button) findViewById(R.id.get_grade);
+        progressBar=(ProgressBar)findViewById(R.id.progressbar);
         imageView = (ImageView) findViewById(R.id.check_picture);
         accountEdit.setText(preferences.getString("account", ""));
         passwordEdit.setText(preferences.getString("password", ""));
-        getCookieAndPictureSrc();//获取cookie和验证码图片的地址
-        getPicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getPicture();
-            }
-        });
-
-        getGrade.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String WebUserNO = accountEdit.getText().toString();
-                String Password = passwordEdit.getText().toString();
-                String Agnomen = checkNumberEdit.getText().toString();
-                Intent intent = new Intent(LoginIn.this, ShowGrade.class);
-                intent.putExtra("cookie", cookie);
-                intent.putExtra("WebUserNO", WebUserNO);
-                intent.putExtra("Password", Password);
-                intent.putExtra("Agnomen", Agnomen);
-                startActivity(intent);
-            }
-        });
 
     }
 
-    private void getCookieAndPictureSrc() {
+    private void getCookieAndPictureSrc() {//获取cookie和图片地址
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = null;
-                BufferedReader reader = null;
                 try {
-                    URL url = new URL(NEU);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.setRequestProperty("Cookie", cookie);
-                    connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
-                    InputStream in = connection.getInputStream();
-                    reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    htmlcode = response.toString();
-                    StringBuilder responsehead = new StringBuilder();
-                    String key;
-                    for (int i = 1; (key = connection.getHeaderFieldKey(i)) != null; i++) {
-                        responsehead.append(key + ":" + connection.getHeaderField(key));
-                        if (key.equals("Set-Cookie")) {
-                            cookie = connection.getHeaderField(key);
-                        }
-                    }
-                    cookie = cookie.substring(0, cookie.length() - 8);
-                    //TODO 存在隐患！
-                    //responsehead中存的是响应头的数据
-                    //showResponse(response.toString());
-                    picturesrc = htmlcode.substring(htmlcode.indexOf("ACTIONVALIDATERANDOMPICTURE"), htmlcode.indexOf("ACTIONVALIDATERANDOMPICTURE") + 64);
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
+                            .build();
+
+                    Request request =new Request.Builder()
+                            .url(new DataClass().aaoUrl)
+                            .build();
+
+                    Response response=client.newCall(request).execute();
+                    String responseData= response.body().string();
+                    String cookieString = response.header("Set-Cookie");
+                    //获取set-cookie段的所有值，保存在cookieString中
+
+                    Log.d("clp","用okhttp：\n"+responseData);
+                    Log.d("clp",cookieString);
+
+                    String[] cookieList = cookieString.split(";");
+                    //用分号分割
+
+                    cookie = cookieList[0];
+                    //第一个就是cookie
+                    Log.d("clp","cookie="+cookie);
+
+                    picturesrc = responseData.substring(responseData.indexOf("ACTIONVALIDATERANDOMPICTURE"), responseData.indexOf("ACTIONVALIDATERANDOMPICTURE") + 64);
                     picturesrc = picturesrc.substring(0, picturesrc.indexOf("\""));
-                    //showResponse(picturesrc);
-                    Log.d("LoginIn", "clp图片的地址" + picturesrc);
-                    Log.d("LoginIn", "clpcookie值为 " + cookie);
+                    //从整个html的代码中获取到图片的地址
+
+                    Log.d("clp","图片地址:"+picturesrc);
+
+                    getPicture();
+                    //把图片加载出来
 
                 } catch (Exception e) {
+
+                    ToastShow("无法连接到教务处");
+                    //超时处理
                     e.printStackTrace();
-                } finally {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
                 }
             }
         }).start();
 
     }
 
-    private void getPicture() {
+    private void getPicture() {//利用现有的cookie去获取图片
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = null;
-                Bitmap bitmap = null;
                 try {
-                    URL url = new URL(NEU + "/" + picturesrc);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.setRequestProperty("Cookie", cookie);
-                    connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
-                    InputStream in = connection.getInputStream();
+
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
+                            .build();
+
+                    Request request =new Request.Builder()
+                            .url(new DataClass().aaoUrl + "/" + picturesrc)
+                            .addHeader("Cookie",cookie)
+                            .build();
+
+                    ResponseBody body = client.newCall(request).execute().body();
+                    InputStream in = body.byteStream();
                     bitmap = BitmapFactory.decodeStream(in);
                     showPicture(bitmap);
                 } catch (Exception e) {
                     e.printStackTrace();
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
+                    ToastShow("无法连接到教务处");
                 }
             }
         }).start();
@@ -165,12 +175,68 @@ public class LoginIn extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                progressBar.setVisibility(View.GONE);
+                imageView.setVisibility(View.VISIBLE);
                 imageView.setImageBitmap(bitmap);
-                //处理
             }
         });
     }
 
 
+    private void judgeLoginInfomation(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody requestBody = new FormBody.Builder()
+                            .add("WebUserNO", WebUserNO)
+                            .add("Password", Password)
+                            .add("Agnomen", Agnomen)
+                            .add("submit7", "%B5%C7%C2%BC")
+                            .build();
+
+                    Request request = new Request.Builder()
+                            .url("http://202.118.31.197/ACTIONLOGON.APPPROCESS?mode=")
+                            .addHeader("Cookie", cookie)
+                            .addHeader("Referer", "http://202.118.31.197")
+                            .post(requestBody)
+                            .build();
+
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
+                    Log.d("clp", "data1=\n" + responseData);
+
+                    if (responseData.indexOf("请输入正确的附加码") != -1) {
+                        ToastShow("请输入正确的附加码");
+                    } else if (responseData.indexOf("您的密码错误了1次，共3次错误机会！") != -1) {
+                        ToastShow("您的密码错误了1次，共3次错误机会！");
+                    } else if (responseData.indexOf("您的密码错误了2次，共3次错误机会！") != -1) {
+                        ToastShow("您的密码错误了2次，共3次错误机会！");
+                    } else if (responseData.indexOf("您的密码错误了3次，共3次错误机会！") != -1) {
+                        ToastShow("您的密码错误了3次，共3次错误机会！");
+                    } else if (responseData.indexOf("密码错误次数超限，锁定登录5分钟！") != -1) {
+                        ToastShow("密码错误次数超限，锁定登录5分钟！");
+                    }else {
+                        Intent intent = new Intent(LoginIn.this, ShowGrade.class);
+                        intent.putExtra("cookie", cookie);
+                        startActivity(intent);
+                        //把验证成功的cookie传给下一个活动。
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void ToastShow(final String string){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(LoginIn.this,string,Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 }

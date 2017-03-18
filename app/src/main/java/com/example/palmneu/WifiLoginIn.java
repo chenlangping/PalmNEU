@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.concurrent.TimeUnit;
 
@@ -61,6 +62,8 @@ public class WifiLoginIn extends AppCompatActivity {
             public void onClick(View v) {
                 account=accoutEdit.getText().toString();
                 password=passwordEdit.getText().toString();
+                Log.d("clp", "account=" + account + "\n");
+                Log.d("clp", "password=" + password + "\n");
                 if (rememberPass.isChecked()) {//如果被选中了
                     editor.putString("ipgwaccount", account);
                     editor.putString("ipgwpassword", password);
@@ -87,6 +90,19 @@ public class WifiLoginIn extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                account=accoutEdit.getText().toString();
+                password=passwordEdit.getText().toString();
+
+                Log.d("clp", "account=" + account + "\n");
+                Log.d("clp", "password=" + password + "\n");
+
+                if (rememberPass.isChecked()) {//如果被选中了
+                    editor.putString("ipgwaccount", account);
+                    editor.putString("ipgwpassword", password);
+                    editor.apply();
+                    //把它们放入"userdata"中
+                }
                 //清除TextView
                 textViewclear();
 
@@ -217,6 +233,9 @@ public class WifiLoginIn extends AppCompatActivity {
                 Log.d("clp", "ip地址：" + IPAddress);
 
                 textView.setText("连接成功！\n" + "已用流量：" + liuliang + "M" + "\n" + "在线时长：" + zaixianshichang + "小时" + "\n" + "余额：" + yue + "元" + "\n" + "ip地址：" + IPAddress);
+
+
+                Toast.makeText(WifiLoginIn.this,"成功联网!已使用"+(float)(Math.round((liuliang/1024)*100))/100 +"G流量",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -227,6 +246,7 @@ public class WifiLoginIn extends AppCompatActivity {
             public void run() {
                 progressBar.setVisibility(View.GONE);
                 textView.setText("密码错误！");
+                Toast.makeText(WifiLoginIn.this,"密码错误",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -255,6 +275,9 @@ public class WifiLoginIn extends AppCompatActivity {
                     if (responseData.equals("网络已断开")) {
                         //成功断网
                         disconnectOk();
+                    }else if (responseData.indexOf("注销失败") != -1) {
+                        //密码错误
+                        passwordWrong();
                     }
 
                 } catch (Exception e) {
@@ -270,6 +293,7 @@ public class WifiLoginIn extends AppCompatActivity {
             public void run() {
                 textView.setText("网络已经断开!");
                 progressBar.setVisibility(View.GONE);
+                Toast.makeText(WifiLoginIn.this,"网络已经断开",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -282,7 +306,7 @@ public class WifiLoginIn extends AppCompatActivity {
                     OkHttpClient client = new OkHttpClient.Builder()
                             .connectTimeout(5, TimeUnit.SECONDS)
                             .build();
-                    client.connectTimeoutMillis();
+                    //client.connectTimeoutMillis();
                     Request request = new Request.Builder()
                             .url("https://ipgw.neu.edu.cn/srun_portal_pc.php?url=&ac_id=1")
                             .build();
@@ -302,6 +326,7 @@ public class WifiLoginIn extends AppCompatActivity {
             public void run() {
                 progressBar.setVisibility(View.GONE);
                 textView.setText("无法连接到ip网关");
+                Toast.makeText(WifiLoginIn.this,"无法连接到ip网关",Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -21,15 +21,13 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="DNUpDRH71LaaxwTmDv1GXtOZv4DX0D3F" />
 
-        <activity android:name=".MainActivity" >
-
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +35,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".SaveUserData" />
-        <activity android:name=".LoginIn" />
+        <activity
+            android:name=".LoginIn"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ShowGrade" />
         <activity android:name=".Map" />
 
@@ -47,11 +47,12 @@
             android:process=":remote" />
 
         <activity android:name=".WifiLoginIn" />
-
         <activity android:name=".Chat" />
         <activity android:name=".Life" />
         <activity android:name=".Me" />
-        <activity android:name=".Friend"></activity>
+        <activity android:name=".Friend" />
+        <activity android:name=".UserLogin" />
+        <activity android:name=".UserRegister"></activity>
     </application>
 
 </manifest>

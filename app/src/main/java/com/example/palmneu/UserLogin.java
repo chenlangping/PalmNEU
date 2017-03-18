@@ -29,8 +29,7 @@ public class UserLogin extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //执行注册操作
-                //这里需要一个新的活动
+                //执行注册
             }
         });
     }

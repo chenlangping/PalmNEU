@@ -22,8 +22,8 @@ public class UserLogin extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //执行登录操作
-                //2017年3月18日23:35:27
+                //陈瑜峰
+                //陈瑜峰
             }
         });
 

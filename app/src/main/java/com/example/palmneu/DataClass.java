@@ -9,4 +9,6 @@ public class DataClass {
 
     public String aaoUrl="http://202.118.31.197";
 
+    public String serveraddress="http://118.202.11.127/";
+
 }

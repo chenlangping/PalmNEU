@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener {
 
-	public static MainActivity mainactivity;
+	private static MainActivity mainactivity;
 
 	/**
 	 * 用于展示消息的Fragment

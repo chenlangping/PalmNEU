@@ -1,9 +1,7 @@
 package com.example.palmneu;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -38,13 +36,6 @@ public class UserLogin extends AppCompatActivity {
                     //暂定向服务器发送的消息格式为   LOGIN%username%password
                     sendMessage("LOGIN%" + account + "%" + password);
                 } else {
-                    //不合法输入则弹出提示
-                    new AlertDialog.Builder(MainActivity.mainactivity)
-                            .setTitle("输入错误提示框")
-                            .setMessage("用户名或密码输入不合法")
-                            .setPositiveButton("确定", null)
-                            .show();
-
 
                 }
 

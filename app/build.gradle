@@ -38,6 +38,7 @@ dependencies {
     //第三方网络通信库 okhttp
 
     testCompile 'junit:junit:4.12'
+    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
 }
 
 

@@ -35,6 +35,13 @@
             android:id="@+id/save_user_information"
             android:text="保存账号密码"
             />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_palm_neu"
+            android:text="登录掌上东大"
+            />
     </LinearLayout>
 
 </RelativeLayout>

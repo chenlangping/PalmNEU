@@ -1,5 +1,6 @@
 package com.example.palmneu;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -22,8 +23,13 @@ public class UserLogin extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //xytest
-                //xy
+                //执行登录操作
+                //TODO 陈瑜峰
+                //1.获取用户输入
+                //2.check(.....)懂吧？
+                //3.如果check返回true就发送给服务器，否则告诉用户错了
+
+
             }
         });
 
@@ -31,6 +37,8 @@ public class UserLogin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //执行注册操作
+                Intent intent=new Intent(UserLogin.this,UserRegister.class);
+                startActivity(intent);
             }
         });
     }
@@ -43,5 +51,10 @@ public class UserLogin extends AppCompatActivity {
         login=(Button)findViewById(R.id.login);
         register=(Button)findViewById(R.id.register);
 
+    }
+
+    private boolean check(String username){
+
+        return true;
     }
 }

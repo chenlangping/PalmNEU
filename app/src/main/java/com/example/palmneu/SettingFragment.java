@@ -37,5 +37,14 @@ public class SettingFragment extends Fragment {
 				startActivity(intent);
 			}
 		});
+
+		Button button3 = (Button) getActivity().findViewById(R.id.login_palm_neu);
+		button3.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent =new Intent(getActivity(),UserLogin.class);
+				startActivity(intent);
+			}
+		});
 	}
 }

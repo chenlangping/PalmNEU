@@ -1,8 +1,7 @@
 package com.example.palmneu;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -13,25 +12,18 @@ public class UserRegister extends AppCompatActivity {
     private EditText nickName;//昵称编辑框
     private EditText emailAddress;//邮箱编辑框
     private Button register;//注册按钮
-    private String a ;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_register);
-        check();
 
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //执行登录操作
 
-            }
-        });
+
 
 
     }
 
-    private boolean check(String username ,String password ,String nickname,String mail ){
+    /*private boolean check(String username ,String password ,String nickname,String mail ){
 
         if(username== null || password == null || nickname  == null || mail  == null||isLegitimateMail(mail))
             return false;
@@ -63,7 +55,7 @@ public class UserRegister extends AppCompatActivity {
             return false;	// It should be one "." after "@".
         }
         return true;
-    }
+    }*/
 
 }
 

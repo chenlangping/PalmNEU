@@ -40,6 +40,7 @@ public class UserLogin extends AppCompatActivity {
                 account = accountEdit.getText().toString();
                 password = passwordEdit.getText().toString();
                 if (check(account, password)) {
+                    //手机端通过检查，发送信息给服务器
                     sendLoginMessageToServer(account,password);
                 } else {
                     showToast("输入错误");
@@ -97,6 +98,16 @@ public class UserLogin extends AppCompatActivity {
                     Response response= client.newCall(request).execute();
                     String responseData =response.body().string();
                     Log.d("clp","返回信息:"+responseData);
+
+                    if (responseData.indexOf("1") != -1) {
+                        //返回1，表示成功登录
+                        showToast("登录成功");
+                    }else if(responseData.indexOf("0")!=-1){
+                        showToast("该用户不存在");
+                    }else if(responseData.indexOf("2")!=-1){
+                        showToast("密码错误");
+                    }
+
 
                 }catch (Exception e){
                     e.printStackTrace();

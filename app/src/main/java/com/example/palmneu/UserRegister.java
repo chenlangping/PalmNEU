@@ -29,7 +29,7 @@ public class UserRegister extends AppCompatActivity {
     private String emailaddress;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_register);
         initView();
@@ -37,85 +37,169 @@ public class UserRegister extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                account=accountEdit.getText().toString();
-                password=passwordEdit.getText().toString();
-                nickname=nickNameEdit.getText().toString();
-                emailaddress=emailAddressEdit.getText().toString();
-                if(check(account,password,nickname,emailaddress)){
+                account = accountEdit.getText().toString();
+                password = passwordEdit.getText().toString();
+                nickname = nickNameEdit.getText().toString();
+                emailaddress = emailAddressEdit.getText().toString();
+                if (check(account, password, nickname, emailaddress)) {
                     //手机端通过检查 发送信息给服务器
-                    sendRegisterMessageToServer(account,password,nickname,emailaddress);
-                }else{
+                    sendRegisterMessageToServer(account, password, nickname, emailaddress);
+                } else {
                     //告知用户错误信息
                 }
-
 
 
             }
         });
     }
 
-    private void initView(){
-        accountEdit=(EditText)findViewById(R.id.account);
-        passwordEdit=(EditText)findViewById(R.id.password);
-        nickNameEdit=(EditText)findViewById(R.id.nickname);
-        emailAddressEdit=(EditText)findViewById(R.id.emailaddress);
-        register=(Button)findViewById(R.id.register);
+    private void initView() {
+        accountEdit = (EditText) findViewById(R.id.account);
+        passwordEdit = (EditText) findViewById(R.id.password);
+        nickNameEdit = (EditText) findViewById(R.id.nickname);
+        emailAddressEdit = (EditText) findViewById(R.id.emailaddress);
+        register = (Button) findViewById(R.id.register);
     }
 
-    private boolean check(String account,String password,String nickname,String emailaddress){
-        return true;
+    private boolean check(String account, String password, String nickname, String emailaddress) {
+        //username：6~18 位字符，只能包含英文字母、数字、下划线
+        // password:6-16位字符，数字，字母(区分大小写），特殊字符组成
+        //nickname:6~18 位字符，只能包含英文字母、数字、下划线
+        //emailaddress:地址4-16个字符，字母（区分大小写），数字，下划线组成。下划线不能在首尾。
+
+        if (isLigitimateAccount(account) == 1 && isLigitimatePassword(password) == 1 && isLigitimateNickname(nickname) == 1 && isLigitimateEmailAddress(emailaddress) == 1)
+            return true;
+        else if (isLigitimateAccount(account) == 2) {
+            //提示：账户位数超出
+        } else if (isLigitimateAccount(account) == 3) {
+            //提示：账户只能包含字母，数字，下划线。
+        } else if (isLigitimatePassword(password) == 2) {
+            //提示：密码长度超
+        } else if (isLigitimateNickname(nickname) == 2) {
+            //提示：昵称长度超出
+        } else if (isLigitimateNickname(nickname) == 3) {
+            //提示：昵称只能含有数字，字母，下划线
+        } else if (isLigitimateEmailAddress(emailaddress) == 2) {
+            //邮箱：昵称长度超出
+        } else if (isLigitimateEmailAddress(emailaddress) == 3) {
+            //提示：邮箱只能含有数字，字母，下划线
+        } else if (isLigitimateEmailAddress(emailaddress) == 4) {
+            //提示：邮箱首位和末位不能使用下划线
+        }
+
+
+        return false;
     }
 
-    private void sendRegisterMessageToServer(final String account,final String password,final String nickname,final String emailaddress){
+    private int isLigitimateAccount(String account) {
+        int size = account.length();
+        if (size >= 6 && size <= 18) {
+            char[] charArray = account.toCharArray();
+            for (char c : charArray) {
+                if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '1' && c <= '9' || c == '_'))
+                    return 3; //不正确，只能包含字母，数字，下划线。
+            }
+        } else {
+            return 2; //不正确，username超过6~18位
+        }
+        return 1; //正确
+    }
+
+    private int isLigitimatePassword(String password) {
+        int size = password.length();
+        if (size >= 6 && size <= 16) {
+            return 1; //正确
+        }
+        return 2; //不正确，密码长度超
+    }
+
+    private int isLigitimateNickname(String nickname) {
+        int size = nickname.length();
+        if (size >= 6 && size <= 18) {
+            char[] charArray = nickname.toCharArray();
+            for (char c : charArray) {
+                if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '1' && c <= '9' || c == '_'))
+                    return 3; //不正确，只能字母数字下划线
+            }
+        } else {
+            return 2;//不正确，长度超出
+        }
+
+        return 1; //正确
+    }
+
+    private int isLigitimateEmailAddress(String emailaddress) {
+        String[] newstr = emailaddress.split("@");
+        int size = newstr[0].length();
+        int first = newstr[0].indexOf("_");
+        int last = newstr[0].lastIndexOf("_");
+        if (first == 0 || last == newstr[0].length() - 1) {
+            return 4;   //不正确，首位末尾不能为下划线
+        }
+        if (size >= 4 && size <= 16) {
+            char[] charArray = newstr[0].toCharArray();
+            for (char c : charArray) {
+                if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '1' && c <= '9' || c == '_')) {
+                    return 3;  //不正确，邮箱地址不能为字母数字下划线
+                }
+            }
+        } else {
+            return 2; //不正确，长度超出
+        }
+
+        return 1;  //正确
+    }
+
+    private void sendRegisterMessageToServer(final String account, final String password, final String nickname, final String emailaddress) {
         new Thread(new Runnable() {
             @Override
             public void run() {
 
                 //userName=chen&passWord=1234&nickName=123jeo&emailAddress=123@163.com
-                try{
-                    OkHttpClient client=new OkHttpClient();
-                    RequestBody requestBody=new FormBody.Builder()
-                            .add("userName",account)
-                            .add("passWord",password)
-                            .add("nickName",nickname)
-                            .add("emailAddress",emailaddress)
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody requestBody = new FormBody.Builder()
+                            .add("userName", account)
+                            .add("passWord", password)
+                            .add("nickName", nickname)
+                            .add("emailAddress", emailaddress)
                             .build();
 
-                    Request request=new Request.Builder()
-                            .url(new DataClass().serveraddress+"register.php")
+                    Request request = new Request.Builder()
+                            .url(new DataClass().serveraddress + "register.php")
                             .post(requestBody)
                             .build();
 
-                    Response response= client.newCall(request).execute();
-                    String responseData =response.body().string();
-                    Log.d("clp","返回信息:"+responseData);
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
+                    Log.d("clp", "返回信息:" + responseData);
 
 
                     if (responseData.indexOf("0") != -1) {
                         //返回0，表示成功注册
                         toastShow("注册成功");
                         //注册成功就返回登录界面，并且帮助用户填上账号密码
-                        Intent intent=new Intent();
-                        intent.putExtra("userName",account);
-                        intent.putExtra("passWord",password);
-                        setResult(1,intent);//1代表的是正确注册的结果
+                        Intent intent = new Intent();
+                        intent.putExtra("userName", account);
+                        intent.putExtra("passWord", password);
+                        setResult(1, intent);//1代表的是正确注册的结果
                         finish();
-                    }else if (responseData.indexOf("1") != -1) {
+                    } else if (responseData.indexOf("1") != -1) {
                         toastShow("email地址已经被注册");
-                    }else if (responseData.indexOf("2") != -1) {
+                    } else if (responseData.indexOf("2") != -1) {
                         toastShow("昵称已被注册");
-                    }else if (responseData.indexOf("3") != -1) {
+                    } else if (responseData.indexOf("3") != -1) {
                         toastShow("昵称和email地址都被注册了");
-                    }else if (responseData.indexOf("4") != -1) {
+                    } else if (responseData.indexOf("4") != -1) {
                         toastShow("用户名已存在");
-                    }else if (responseData.indexOf("5") != -1) {
+                    } else if (responseData.indexOf("5") != -1) {
                         toastShow("用户名和email地址均已存在");
-                    }else if (responseData.indexOf("6") != -1) {
+                    } else if (responseData.indexOf("6") != -1) {
                         toastShow("用户名和昵称均已存在");
-                    }else if (responseData.indexOf("7") != -1) {
+                    } else if (responseData.indexOf("7") != -1) {
                         toastShow("用户名和昵称和email地址均已存在！");
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -127,7 +211,7 @@ public class UserRegister extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(UserRegister.this,msg,Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserRegister.this, msg, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -135,8 +219,8 @@ public class UserRegister extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //如果用户没有注册而是通过返回键返回的，那么返回值是2
-        Intent intent=new Intent();
-        setResult(2,intent);
+        Intent intent = new Intent();
+        setResult(2, intent);
         finish();
     }
 }

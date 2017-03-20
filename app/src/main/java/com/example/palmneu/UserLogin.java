@@ -101,11 +101,13 @@ public class UserLogin extends AppCompatActivity {
 
                     if (responseData.indexOf("1") != -1) {
                         //返回1，表示成功登录
-                        showToast("登录成功");
+                        toastShow("登录成功");
                     }else if(responseData.indexOf("0")!=-1){
-                        showToast("该用户不存在");
+                        toastShow("该用户不存在");
                     }else if(responseData.indexOf("2")!=-1){
-                        showToast("密码错误");
+                        toastShow("密码错误");
+                    }else {
+                        toastShow("未知错误");
                     }
 
 
@@ -121,6 +123,14 @@ public class UserLogin extends AppCompatActivity {
         Toast.makeText(UserLogin.this,msg,Toast.LENGTH_SHORT).show();
     }
 
+    private void toastShow(final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(UserLogin.this,msg,Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

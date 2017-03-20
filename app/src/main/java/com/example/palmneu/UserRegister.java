@@ -207,7 +207,7 @@ public class UserRegister extends AppCompatActivity {
         }).start();
     }
 
-    private void toastShow(final String msg) {//提示用户无法连接到校园网
+    private void toastShow(final String msg) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

@@ -19,12 +19,14 @@ public class UserRegister extends AppCompatActivity {
 
     private EditText accountEdit;//账号编辑框
     private EditText passwordEdit;//密码编辑框
+    private EditText ensurepasswordEdit; //确认密码编辑框
     private EditText nickNameEdit;//昵称编辑框
     private EditText emailAddressEdit;//邮箱编辑框
     private Button register;//注册按钮
 
     private String account;
     private String password;
+    private String ensurepassword;
     private String nickname;
     private String emailaddress;
 
@@ -39,9 +41,17 @@ public class UserRegister extends AppCompatActivity {
             public void onClick(View v) {
                 account = accountEdit.getText().toString();
                 password = passwordEdit.getText().toString();
+                ensurepassword = ensurepasswordEdit.getText().toString();
                 nickname = nickNameEdit.getText().toString();
                 emailaddress = emailAddressEdit.getText().toString();
-                switch (check(account, password, nickname, emailaddress)){
+
+                //密码确认
+                while (!ensurePassword(password,ensurepassword)) {
+                    showToast("你两次输入的密码不一样，重新输入确认密码");
+                }
+                //重新输入确认密码后点击注册button
+
+                    switch (check(account, password, nickname, emailaddress)){
                     case 1:
                         sendRegisterMessageToServer(account, password, nickname, emailaddress);
                         break;
@@ -89,11 +99,19 @@ public class UserRegister extends AppCompatActivity {
     private void initView() {
         accountEdit = (EditText) findViewById(R.id.account);
         passwordEdit = (EditText) findViewById(R.id.password);
+        ensurepasswordEdit = (EditText) findViewById(R.id.ensurepassword);
         nickNameEdit = (EditText) findViewById(R.id.nickname);
         emailAddressEdit = (EditText) findViewById(R.id.emailaddress);
         register = (Button) findViewById(R.id.register);
     }
 
+    private boolean ensurePassword (String password, String ensurepassword){
+        if (password.equals(ensurepassword)){
+            return true;   //密码和确认密码一致
+        }
+        else
+            return  false;   //密码和确认密码不一致
+    }
     private int check(String account, String password, String nickname, String emailaddress) {
         //username：6~18 位字符，只能包含英文字母、数字、下划线
         //password:6-16位字符，数字，字母(区分大小写），特殊字符组成

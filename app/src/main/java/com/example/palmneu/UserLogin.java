@@ -1,6 +1,7 @@
 package com.example.palmneu;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -22,8 +28,11 @@ public class UserLogin extends AppCompatActivity {
     private EditText passwordEdit;//密码编辑框
     private Button login;//登录按钮
     private Button register;//注册按钮
-    String account=null;//用户名
-    String password=null;//密码
+
+    private String account = null;//用户名
+    private String nickname = null;//昵称
+    private String password = null;//密码
+    private String emailAddress = null;//邮箱
 
 
     @Override
@@ -41,7 +50,7 @@ public class UserLogin extends AppCompatActivity {
                 password = passwordEdit.getText().toString();
                 if (true) {
                     //手机端通过检查，发送信息给服务器
-                    sendLoginMessageToServer(account,password);
+                    sendLoginMessageToServer(account, password);
                 } else {
                     showToast("输入错误");
                 }
@@ -54,7 +63,7 @@ public class UserLogin extends AppCompatActivity {
             public void onClick(View v) {
                 //执行注册操作
                 Intent intent = new Intent(UserLogin.this, UserRegister.class);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -72,46 +81,53 @@ public class UserLogin extends AppCompatActivity {
 
     private boolean check(String username, String password) {
         boolean flag = false;
-        if (username != null && password != null) {
+        if (username.indexOf(" ") == -1 && password.indexOf(" ") == -1) {
+            //若用户名和密码均不含空格
             flag = true;
         }
+
         return flag;
     }
 
-    private void sendLoginMessageToServer(final String account,final String password){
+    private void sendLoginMessageToServer(final String account, final String password) {
         new Thread(new Runnable() {
             @Override
             public void run() {
 
-                try{
-                    OkHttpClient client=new OkHttpClient();
-                    RequestBody requestBody=new FormBody.Builder()
-                            .add("userName",account)
-                            .add("passWord",password)
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody requestBody = new FormBody.Builder()
+                            .add("userName", account)
+                            .add("passWord", password)
                             .build();
 
-                    Request request=new Request.Builder()
-                            .url(new DataClass().serveraddress+"login.php")
+                    Request request = new Request.Builder()
+                            .url(new DataClass().serveraddress + "login.php")
                             .post(requestBody)
                             .build();
 
-                    Response response= client.newCall(request).execute();
-                    String responseData =response.body().string();
-                    Log.d("clp","返回的信息:"+responseData);
+                    Response response = client.newCall(request).execute();
+                    String responseData = response.body().string();
+                    Log.d("clp", "返回的信息:" + responseData);
 
                     if (responseData.indexOf("1") != -1) {
                         //返回1，表示成功登录
                         toastShow("登录成功");
-                    }else if(responseData.indexOf("0")!=-1){
+                        //获取昵称和邮箱
+                        //返回格式为1,nickName,emailAddress
+                        nickname = responseData.split(",")[1];
+                        emailAddress = responseData.split(",")[2];
+
+                    } else if (responseData.indexOf("0") != -1) {
                         toastShow("该用户不存在");
-                    }else if(responseData.indexOf("2")!=-1){
+                    } else if (responseData.indexOf("2") != -1) {
                         toastShow("密码错误");
-                    }else {
+                    } else {
                         toastShow("未知错误");
                     }
 
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -119,8 +135,8 @@ public class UserLogin extends AppCompatActivity {
         }).start();
     }
 
-    private void showToast(String msg){
-        Toast.makeText(UserLogin.this,msg,Toast.LENGTH_SHORT).show();
+    private void showToast(String msg) {
+        Toast.makeText(UserLogin.this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private void toastShow(final String msg) {
@@ -134,15 +150,15 @@ public class UserLogin extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
             case 1:
-                if(resultCode==1){
+                if (resultCode == 1) {
                     //用户注册之后返回的
-                    String account=data.getStringExtra("userName");
-                    String password=data.getStringExtra("passWord");
+                    String account = data.getStringExtra("userName");
+                    String password = data.getStringExtra("passWord");
                     accountEdit.setText(account);
                     passwordEdit.setText(password);
-                }else if(resultCode==2){
+                } else if (resultCode == 2) {
                     //用户只是按了返回键返回，什么都不用做
                 }
 
@@ -151,5 +167,7 @@ public class UserLogin extends AppCompatActivity {
                 //没有别的了
         }
     }
+
+
 }
 

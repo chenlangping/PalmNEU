@@ -1,7 +1,6 @@
 package com.example.palmneu;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,10 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -48,7 +44,7 @@ public class UserLogin extends AppCompatActivity {
                 //获取输入内容
                 account = accountEdit.getText().toString();
                 password = passwordEdit.getText().toString();
-                if (true) {
+                if (check(account,password)) {
                     //手机端通过检查，发送信息给服务器
                     sendLoginMessageToServer(account, password);
                 } else {
@@ -95,7 +91,9 @@ public class UserLogin extends AppCompatActivity {
             public void run() {
 
                 try {
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(3, TimeUnit.SECONDS)
+                            .build();
                     RequestBody requestBody = new FormBody.Builder()
                             .add("userName", account)
                             .add("passWord", password)
@@ -128,6 +126,7 @@ public class UserLogin extends AppCompatActivity {
 
 
                 } catch (Exception e) {
+                    toastShow("连接到服务器超时");
                     e.printStackTrace();
                 }
 

@@ -1,12 +1,12 @@
 package com.example.palmneu;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 public class ContactsFragment extends Fragment {
 
@@ -20,11 +20,12 @@ public class ContactsFragment extends Fragment {
 
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		Button button = (Button) getActivity().findViewById(R.id.button1);
+		Button button = (Button) getActivity().findViewById(R.id.see_note);
 		button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Toast.makeText(getActivity(), "nihao", Toast.LENGTH_LONG).show();
+				Intent intent=new Intent(getActivity(),Note.class);
+				startActivity(intent);
 			}
 		});
 	}

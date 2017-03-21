@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -218,7 +220,9 @@ public class UserRegister extends AppCompatActivity {
 
                 //userName=chen&passWord=1234&nickName=123jeo&emailAddress=123@163.com
                 try {
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(3, TimeUnit.SECONDS)
+                            .build();
                     RequestBody requestBody = new FormBody.Builder()
                             .add("userName", account)
                             .add("passWord", password)
@@ -261,6 +265,7 @@ public class UserRegister extends AppCompatActivity {
                         toastShow("用户名和昵称和email地址均已存在！");
                     }
                 } catch (Exception e) {
+                    toastShow("连接到服务器超时");
                     e.printStackTrace();
                 }
 

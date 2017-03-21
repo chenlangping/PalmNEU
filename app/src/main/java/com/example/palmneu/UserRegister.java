@@ -41,12 +41,45 @@ public class UserRegister extends AppCompatActivity {
                 password = passwordEdit.getText().toString();
                 nickname = nickNameEdit.getText().toString();
                 emailaddress = emailAddressEdit.getText().toString();
-                if (check(account, password, nickname, emailaddress)) {
-                    //手机端通过检查 发送信息给服务器
-                    sendRegisterMessageToServer(account, password, nickname, emailaddress);
-                } else {
-                    //告知用户错误信息
+                switch (check(account, password, nickname, emailaddress)){
+                    case 1:
+                        sendRegisterMessageToServer(account, password, nickname, emailaddress);
+                        break;
+                    case 2:
+                        showToast("账户长度必须为6-18位");
+                        break;
+                    case 3:
+                        showToast("账户中存在非法字符");
+                        break;
+                    case 4:
+                        showToast("密码长度必须为6-16位");
+                        break;
+                    case 5:
+                        showToast("昵称长度必须为6-18位");
+                        break;
+                    case 6:
+                        showToast("昵称中存在非法字符");
+                        break;
+                    case 7:
+                        showToast("邮箱地址长度非法");
+                        break;
+                    case 8:
+                        showToast("邮箱地址中存在非法字符");
+                        break;
+                    case 9:
+                        showToast("邮箱地址非法");
+                        break;
+                    case 10:
+                        showToast("发生未知错误");
+                        break;
+
                 }
+//                if (check(account, password, nickname, emailaddress)) {
+//                    //手机端通过检查 发送信息给服务器
+//                    sendRegisterMessageToServer(account, password, nickname, emailaddress);
+//                } else {
+//                    //告知用户错误信息
+//                }
 
 
             }
@@ -61,34 +94,44 @@ public class UserRegister extends AppCompatActivity {
         register = (Button) findViewById(R.id.register);
     }
 
-    private boolean check(String account, String password, String nickname, String emailaddress) {
+    private int check(String account, String password, String nickname, String emailaddress) {
         //username：6~18 位字符，只能包含英文字母、数字、下划线
-        // password:6-16位字符，数字，字母(区分大小写），特殊字符组成
+        //password:6-16位字符，数字，字母(区分大小写），特殊字符组成
         //nickname:6~18 位字符，只能包含英文字母、数字、下划线
         //emailaddress:地址4-16个字符，字母（区分大小写），数字，下划线组成。下划线不能在首尾。
 
         if (isLigitimateAccount(account) == 1 && isLigitimatePassword(password) == 1 && isLigitimateNickname(nickname) == 1 && isLigitimateEmailAddress(emailaddress) == 1)
-            return true;
+            return 1;
         else if (isLigitimateAccount(account) == 2) {
             //提示：账户位数超出
+            return 2;
         } else if (isLigitimateAccount(account) == 3) {
             //提示：账户只能包含字母，数字，下划线。
+            return 3;
         } else if (isLigitimatePassword(password) == 2) {
             //提示：密码长度超
+            return 4;
         } else if (isLigitimateNickname(nickname) == 2) {
             //提示：昵称长度超出
+            return 5;
         } else if (isLigitimateNickname(nickname) == 3) {
             //提示：昵称只能含有数字，字母，下划线
+            return 6;
         } else if (isLigitimateEmailAddress(emailaddress) == 2) {
-            //邮箱：昵称长度超出
+            //提示：邮箱长度超出
+            return 7;
         } else if (isLigitimateEmailAddress(emailaddress) == 3) {
             //提示：邮箱只能含有数字，字母，下划线
+            return 8;
         } else if (isLigitimateEmailAddress(emailaddress) == 4) {
             //提示：邮箱首位和末位不能使用下划线
+            return 9;
+        }else{
+            return 10;
         }
 
 
-        return false;
+
     }
 
     private int isLigitimateAccount(String account) {
@@ -214,6 +257,10 @@ public class UserRegister extends AppCompatActivity {
                 Toast.makeText(UserRegister.this, msg, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showToast(String msg){
+        Toast.makeText(UserRegister.this,msg,Toast.LENGTH_SHORT).show();
     }
 
     @Override

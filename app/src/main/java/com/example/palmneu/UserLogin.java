@@ -136,13 +136,13 @@ public class UserLogin extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
             case 1:
-                if(requestCode==1){
+                if(resultCode==1){
                     //用户注册之后返回的
                     String account=data.getStringExtra("userName");
                     String password=data.getStringExtra("passWord");
                     accountEdit.setText(account);
                     passwordEdit.setText(password);
-                }else if(requestCode==2){
+                }else if(resultCode==2){
                     //用户只是按了返回键返回，什么都不用做
                 }
 

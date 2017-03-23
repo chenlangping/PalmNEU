@@ -115,7 +115,7 @@ public class UserRegister extends AppCompatActivity {
             return  false;   //密码和确认密码不一致
     }
     private int check(String account, String password, String nickname, String emailaddress) {
-        //username：6~18 位字符，只能包含英文字母、数字、下划线
+        //username：6~18位字符，只能包含英文字母、数字、下划线
         //password:6-16位字符，数字，字母(区分大小写），特殊字符组成
         //nickname:6~18 位字符，只能包含英文字母、数字、下划线
         //emailaddress:地址4-16个字符，字母（区分大小写），数字，下划线组成。下划线不能在首尾。

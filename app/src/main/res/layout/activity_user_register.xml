@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/wifi_login_background"
     tools:context="com.example.palmneu.UserRegister">
 
 
@@ -16,14 +17,14 @@
         android:layout_width="match_parent"
         android:layout_height="140dp">
 
-        <EditText
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="74dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="欢迎注册掌上东大"
             android:textColor="#000000"
-            android:textSize="25dp"
+            android:textSize="35dp"
             android:id="@+id/editText0" />
 
     </LinearLayout>
@@ -33,7 +34,7 @@
         android:layout_height="50dp"
         android:orientation="horizontal">
         <TextView
-            android:text="账户："
+            android:text="账户*："
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -45,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/account"
-            android:hint="输入你的用户名"
+            android:hint="6~18位,只能包含字母,数字,下划线"
             android:layout_gravity="center_vertical"/>
     </LinearLayout>
 
@@ -54,7 +55,7 @@
         android:layout_height="50dp"
         android:orientation="horizontal">
         <TextView
-            android:text="密码："
+            android:text="密码*："
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -65,7 +66,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="请输入你的密码"
+            android:hint="6-16位字符,数字,字母,特殊字符"
             android:ems="10"
             android:layout_gravity="center_vertical"
             android:id="@+id/password" />
@@ -77,7 +78,7 @@
         android:layout_height="50dp"
         android:orientation="horizontal">
         <TextView
-            android:text="密码："
+            android:text="确认密码*："
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -88,7 +89,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="请确认你的密码"
+            android:hint="再次输入刚才的密码"
             android:ems="10"
             android:layout_gravity="center_vertical"
             android:id="@+id/ensurepassword" />
@@ -101,7 +102,7 @@
         android:layout_height="50dp"
         android:orientation="horizontal">
         <TextView
-            android:text="昵称："
+            android:text="昵称*："
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -114,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:hint="请输入你的昵称"
+            android:hint="6~18位字符,只能英文字母,数字"
             android:ems="10"
             android:id="@+id/nickname" />
     </LinearLayout>
@@ -136,7 +137,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:hint="请输入你的邮箱"
+            android:hint="选填,请输入你的邮箱"
             android:ems="10"
             android:id="@+id/emailaddress" />
     </LinearLayout>

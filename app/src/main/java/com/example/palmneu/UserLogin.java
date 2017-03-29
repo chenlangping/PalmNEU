@@ -1,6 +1,7 @@
 package com.example.palmneu;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -110,11 +111,19 @@ public class UserLogin extends AppCompatActivity {
 
                     if (responseData.indexOf("1") != -1) {
                         //返回1，表示成功登录
-                        toastShow("登录成功");
                         //获取昵称和邮箱
                         //返回格式为1,nickName,emailAddress
                         nickname = responseData.split(",")[1];
                         emailAddress = responseData.split(",")[2];
+                        toastShow("登录成功，欢迎你 "+nickname);
+                        //因为此时已经验证用户登录了，所以我们帮用户保存下账号和密码
+                        SharedPreferences.Editor editor=getSharedPreferences("userdata",MODE_PRIVATE).edit();
+                        editor.putString("palmneuaccount",account);
+                        editor.putString("palmneupassword",password);
+                        editor.putString("palmneunickname",nickname);
+                        editor.putString("palmneunickname",emailAddress);
+                        editor.apply();
+
 
                     } else if (responseData.indexOf("0") != -1) {
                         toastShow("该用户不存在");

@@ -46,7 +46,7 @@ public class UserRegister extends AppCompatActivity {
                 ensurepassword = ensurepasswordEdit.getText().toString();
                 nickname = nickNameEdit.getText().toString();
                 emailaddress = emailAddressEdit.getText().toString();
-
+                //userName=chenlangping&nickName=chenlangping&emailAddress=328566&passWord=98
                 //密码确认
                 while (!ensurePassword(password,ensurepassword)) {
                     showToast("你两次输入的密码不一样，重新输入确认密码");
@@ -86,13 +86,6 @@ public class UserRegister extends AppCompatActivity {
                         break;
 
                 }
-//                if (check(account, password, nickname, emailaddress)) {
-//                    //手机端通过检查 发送信息给服务器
-//                    sendRegisterMessageToServer(account, password, nickname, emailaddress);
-//                } else {
-//                    //告知用户错误信息
-//                }
-
 
             }
         });

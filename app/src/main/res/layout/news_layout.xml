@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -9,28 +9,38 @@
         android:layout_centerInParent="true"
         android:orientation="vertical" >
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/news_selected" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="10dp"
-            android:text="这是动态界面"
+            android:text="功能扩展"
             android:textSize="20sp" />
 
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/getgrade"
-        android:text="获取成绩"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="33dp" />
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/getgrade"
+            android:text="获取成绩"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="33dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ecard"
+            android:text="校园卡消费记录"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="33dp" />
+    </LinearLayout>
+
+
+</LinearLayout>

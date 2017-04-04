@@ -28,6 +28,15 @@ public class NewsFragment extends Fragment {
 				startActivity(intent);
 			}
 		});
+
+		Button button1 = (Button)getActivity().findViewById(R.id.ecard);
+		button1.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent=new Intent(getActivity(),Ecard.class);
+				startActivity(intent);
+			}
+		});
 	}
 
 }

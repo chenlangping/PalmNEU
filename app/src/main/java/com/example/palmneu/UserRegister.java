@@ -46,6 +46,9 @@ public class UserRegister extends AppCompatActivity {
                 ensurepassword = ensurepasswordEdit.getText().toString();
                 nickname = nickNameEdit.getText().toString();
                 emailaddress = emailAddressEdit.getText().toString();
+
+                //sendRegisterMessageToServer(account, password, nickname, emailaddress);
+
                 //userName=chenlangping&nickName=chenlangping&emailAddress=328566&passWord=98
                 //密码确认
                 while (!ensurePassword(password,ensurepassword)) {

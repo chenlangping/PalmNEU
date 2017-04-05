@@ -14,7 +14,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
@@ -46,6 +48,12 @@ public class Ecard extends AppCompatActivity {
     private String txtUserName=null;
     private String txtPassword=null;
     private String txtVaildateCode=null;
+    //用户名 密码 验证码
+
+    private String __VIEWSTATE=null;
+    private String __EVENTVALIDATION=null;
+    //这两个参数是网站每日生成的，在第一次返回的代码中有
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,8 +122,30 @@ public class Ecard extends AppCompatActivity {
                             .build();
 
                     Response response=client.newCall(request).execute();
-                    String responseData= response.body().string();
-                    //Log.d("clp",responseData);
+
+                    InputStream in=response.body().byteStream();
+                    BufferedReader reader=new BufferedReader(new InputStreamReader(in));
+                    String line=null;
+                    String __VIEWSTATEline=null;
+                    String __EVENTVALIDATIONline=null;
+                    while((line=reader.readLine())!=null){
+                        Log.d("clp",line);
+                        if(line.indexOf("__VIEWSTATE")!=-1){
+                            __VIEWSTATEline=line;
+                        }
+                        if(line.indexOf("__EVENTVALIDATION")!=-1){
+                            __EVENTVALIDATIONline=line;
+                        }
+
+                    }
+                    Log.d("clp",__VIEWSTATEline);
+                    Log.d("clp",__EVENTVALIDATIONline);
+
+                    __VIEWSTATE=__VIEWSTATEline.substring(__VIEWSTATEline.indexOf("value=")+7,__VIEWSTATEline.length()-4);
+                    Log.d("clp","处理过后的="+__VIEWSTATE);
+
+                    __EVENTVALIDATION=__EVENTVALIDATIONline.substring(__EVENTVALIDATIONline.indexOf("value=")+7,__EVENTVALIDATIONline.length()-4);
+                    Log.d("clp","处理过后的="+__EVENTVALIDATION);
 
                     String cookieAll = response.headers("Set-Cookie").get(0);
                     //Log.d("clp","\n cookie字段="+cookieAll);
@@ -208,8 +238,8 @@ public class Ecard extends AppCompatActivity {
                             .add("__LASTFOCUS", "")
                             .add("__EVENTTARGET", "btnLogin")
                             .add("__EVENTARGUMENT", "")
-                            .add("__VIEWSTATE", "/wEPDwUKMTM4OTU1Nzc4NA8WAh4Hc3lzSW5mbzKSBQABAAAA/////wEAAAAAAAAADAIAAABPTmV3Y2FwZWMuVW5pdmVyc2FsU1MuRFRPLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAwDAAAAUk5ld2NhcGVjLlVuaXZlcnNhbFNTLkVudGl0eSwgVmVyc2lvbj0xLjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGwFAQAAAChOZXdjYXBlYy5Vbml2ZXJzYWxTUy5EVE8uRFRPX09VVF9TWVNJTkZPBAAAAB48T1BFUkFUSU9OTU9ERT5rX19CYWNraW5nRmllbGQbRFRPX1dTUnVuUmVzdWx0K19yZXN1bHRDb2RlGkRUT19XU1J1blJlc3VsdCtfcmVzdWx0TXNnHURUT19XU1J1blJlc3VsdCtfRWNhcmRWZXJzaW9uBAEBBDNOZXdjYXBlYy5Vbml2ZXJzYWxTUy5FbnRpdHkuRW51bS5FbnVtX09QRVJBVElPTk1PREUDAAAAMk5ld2NhcGVjLlVuaXZlcnNhbFNTLkVudGl0eS5FbnVtLkVudW1fRWNhcmRWZXJzaW9uAwAAAAIAAAAF/P///zNOZXdjYXBlYy5Vbml2ZXJzYWxTUy5FbnRpdHkuRW51bS5FbnVtX09QRVJBVElPTk1PREUBAAAAB3ZhbHVlX18ACAMAAAABAAAABgUAAAABMQYGAAAADOaJp+ihjOaIkOWKnwX5////Mk5ld2NhcGVjLlVuaXZlcnNhbFNTLkVudGl0eS5FbnVtLkVudW1fRWNhcmRWZXJzaW9uAQAAAAd2YWx1ZV9fAAgDAAAAQAAAAAsWAgIDD2QWBAIDDw8WAh4HVmlzaWJsZWhkFgJmDw8WAh4EVGV4dAUIMDAwMDAwMDBkZAILDw8WBB4LTmF2aWdhdGVVcmwFI2h0dHBzOi8vZWNhcmQubmV1LmVkdS5jbi9zZWxmc2VhcmNoHwFnZGRkAweWqu57mQFP8B4nVfROEI6Ir0096fOwGLk/ZRwAv/4=")
-                            .add("__EVENTVALIDATION","/wEWBgKC+bThDQKl1bKzCQK1qbSRCwLTtPqEDQLkysKABAKC3IeGDGQe/atYgDWYZbK8ZRWJzBl5RKssahKr5OIP4orc4x36")
+                            .add("__VIEWSTATE",__VIEWSTATE)
+                            .add("__EVENTVALIDATION",__EVENTVALIDATION)
                             .add("txtUserName",txtUserName)
                             .add("txtPassword",txtPassword)
                             .add("txtVaildateCode",txtVaildateCode)

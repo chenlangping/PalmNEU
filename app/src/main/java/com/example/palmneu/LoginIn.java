@@ -72,6 +72,13 @@ public class LoginIn extends AppCompatActivity {
             }
         });
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getCookieAndPictureSrc();
+            }
+        });
+
         getGrade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

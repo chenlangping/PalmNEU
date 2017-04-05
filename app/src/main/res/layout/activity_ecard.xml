@@ -91,7 +91,8 @@
             android:id="@+id/check_picture"
             android:layout_weight="0.3"
             android:layout_gravity="center"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:clickable="true"/>
 
         <ProgressBar
             android:layout_width="100dp"
@@ -108,6 +109,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/get_picture"
+        android:visibility="gone"
         android:text="刷新验证码"/>
 
     <Button

@@ -79,6 +79,13 @@ public class Ecard extends AppCompatActivity {
             }
         });
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getCookieAndPicture();
+            }
+        });
+
         getEcardInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -3,8 +3,10 @@ package com.example.palmneu;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,7 +38,9 @@ public class UserLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
-
+        ActionBar actionBar= getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        //添加返回按钮到导航栏
         initView();
 
         login.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +67,17 @@ public class UserLogin extends AppCompatActivity {
                 startActivityForResult(intent, 1);
             }
         });
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {//返回按钮的实现
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:return  true;
+        }
 
     }
 

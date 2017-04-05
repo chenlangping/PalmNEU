@@ -2,8 +2,10 @@ package com.example.palmneu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -34,11 +36,25 @@ public class ShowGrade extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_grade);
+        ActionBar actionBar= getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        //添加返回按钮到导航栏
         Intent intent = getIntent();
         cookie = intent.getStringExtra("cookie");
         listView = (ListView) findViewById(R.id.list_view);
         getGrade();
 
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {//返回按钮的实现
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:return  true;
+        }
 
     }
 

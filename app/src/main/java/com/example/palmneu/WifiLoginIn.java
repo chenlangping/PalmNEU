@@ -2,8 +2,10 @@ package com.example.palmneu;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -51,6 +53,9 @@ public class WifiLoginIn extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wifi_login_in);
+        ActionBar actionBar= getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        //添加返回按钮到导航栏
         initView();
 
         Log.d("clp", "account=" + account + "\n");
@@ -120,6 +125,16 @@ public class WifiLoginIn extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {//返回按钮的实现
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:return  true;
+        }
+
+    }
     private void connectWifi() {//连接校园网
         new Thread(new Runnable() {
             @Override

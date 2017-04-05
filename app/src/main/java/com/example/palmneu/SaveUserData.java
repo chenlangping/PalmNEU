@@ -2,7 +2,9 @@ package com.example.palmneu;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +27,10 @@ public class SaveUserData extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_user_data);
+        ActionBar actionBar= getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        //添加返回按钮到导航栏
+
         editor =getSharedPreferences("userdata",MODE_PRIVATE).edit();
         preferences=getSharedPreferences("userdata",MODE_PRIVATE);
         accountEdit=(EditText)findViewById(R.id.account);
@@ -90,6 +96,17 @@ public class SaveUserData extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {//返回按钮的实现
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:return  true;
+        }
 
     }
 }

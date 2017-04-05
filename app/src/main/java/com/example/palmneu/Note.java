@@ -2,10 +2,12 @@ package com.example.palmneu;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
 import okhttp3.FormBody;
@@ -29,6 +31,9 @@ public class Note extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
+        ActionBar actionBar= getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        //添加返回按钮到导航栏
 
         //SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);
         //int id= pref.getInt("ID",0);
@@ -36,10 +41,16 @@ public class Note extends AppCompatActivity {
 
         getLatestNote();
 
+    }
 
-
-
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {//返回按钮的实现
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:return  true;
+        }
 
     }
 

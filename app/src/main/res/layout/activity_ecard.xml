@@ -12,6 +12,7 @@
     tools:context="com.example.palmneu.Ecard"
     android:background="@drawable/wifi_login_background">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"

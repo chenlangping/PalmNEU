@@ -283,6 +283,11 @@ public class Ecard extends AppCompatActivity {
                             canLogin=false;
                             getCookieAndPicture();
                         }
+                        if(line.indexOf("验证码过期")!=-1){
+                            ToastShow("验证码过期");
+                            canLogin=false;
+                            getCookieAndPicture();
+                        }
                     }
                     String[] cookieAll=response.header("Set-Cookie").split(";");
                     String cookie2=cookieAll[0];

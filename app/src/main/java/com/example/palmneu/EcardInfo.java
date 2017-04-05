@@ -2,13 +2,21 @@ package com.example.palmneu;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -18,6 +26,7 @@ import java.util.Date;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class EcardInfo extends AppCompatActivity {
 
@@ -31,6 +40,8 @@ public class EcardInfo extends AppCompatActivity {
     private Button button=null;
     private Button setStartTime=null;
     private Button setEndTime=null;
+    private ImageView imageView;//图片控件
+    private Bitmap bitmap=null; //头像
 
     private int currentYear=0;
     private int currentMonth=0;
@@ -94,6 +105,7 @@ public class EcardInfo extends AppCompatActivity {
         setEndTime=(Button)findViewById(R.id.setendtime);
         textViewStartTime=(TextView)findViewById(R.id.textviewstarttime);
         textViewEndTime=(TextView)findViewById(R.id.textviewendtime);
+        imageView=(ImageView)findViewById(R.id.photo);
     }
 
     private void initData(){
@@ -110,6 +122,10 @@ public class EcardInfo extends AppCompatActivity {
         endYear=currentYear;
         endMonth=currentMonth;
         endDay=currentDay;
+
+        textViewStartTime.setText(String.valueOf(startYear)+"-"+String.valueOf(startMonth)+"-"+String.valueOf(startDay));
+        textViewEndTime.setText(String.valueOf(endYear)+"-"+String.valueOf(endMonth)+"-"+String.valueOf(endDay));
+
     }
     private void showEcardInfo(){
         new Thread(new Runnable() {
@@ -134,7 +150,7 @@ public class EcardInfo extends AppCompatActivity {
                         //Log.d("clp",line);
                     }
 
-                    /***********************************************/
+                    /*************************下面开始获取登录信息啦**********************/
 
                     OkHttpClient client2 = new OkHttpClient();
 
@@ -151,11 +167,33 @@ public class EcardInfo extends AppCompatActivity {
                     reader=new BufferedReader(new InputStreamReader(in));
                     while((line=reader.readLine())!=null){
                         if(line.indexOf("正常卡")!=-1){
-                            showResult(line);
+                            Log.d("clp",line);
+                            String msg="";
+                            Document doc = Jsoup.parse(line);
+                            Elements elements =doc.select("span");
+                            for (Element element : elements) {
+                                String name = element.text();
+                                msg=msg+name+'\n';
+                            }
+                            showResult(msg);
                         }
                     }
 
+                    /*************************下面开始获取你的照片***************************/
 
+                    OkHttpClient client3 = new OkHttpClient();
+
+                    Request request3 =new Request.Builder()
+                            .url("http://ecard.neu.edu.cn/SelfSearch/User/Photo.ashx")
+                            .addHeader("Cookie",cookie3)
+                            .addHeader("Referer","http://ecard.neu.edu.cn/SelfSearch/User/Home.aspx")
+                            .addHeader("Connection","keep-alive")
+                            .build();
+
+                    ResponseBody body = client3.newCall(request3).execute().body();
+                    in = body.byteStream();
+                    bitmap = BitmapFactory.decodeStream(in);
+                    showPicture(bitmap);
 
 
                 }catch (Exception e){
@@ -208,4 +246,14 @@ public class EcardInfo extends AppCompatActivity {
 
 
     };
+
+    private void showPicture(final Bitmap bitmap) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                imageView.setVisibility(View.VISIBLE);
+                imageView.setImageBitmap(bitmap);
+            }
+        });
+    }
 }

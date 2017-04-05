@@ -55,6 +55,7 @@ public class Ecard extends AppCompatActivity {
     //这两个参数是网站每日生成的，在第一次返回的代码中有
 
 
+    private boolean canLogin=true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +63,9 @@ public class Ecard extends AppCompatActivity {
         initView();
         getCookieAndPicture();
 
-
+        accountEdit.setText("20144835");
+        passwordEdit.setText("036518");
+        //省的我每次输入
 
         getPicture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +78,7 @@ public class Ecard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //获取记录啦
-
+                canLogin=true;
                 txtUserName=accountEdit.getText().toString();
                 txtPassword=passwordEdit.getText().toString();
                 txtVaildateCode=checkNumberEdit.getText().toString();
@@ -260,27 +263,55 @@ public class Ecard extends AppCompatActivity {
 
 
                     Response response = client.newCall(request).execute();
-                    String responseData = response.body().string();
 
+                    InputStream in=response.body().byteStream();
+                    BufferedReader reader=new BufferedReader(new InputStreamReader(in));
+                    String line;
+                    while((line=reader.readLine())!=null){
+                        if(line.indexOf("验证码错误")!=-1){
+                            ToastShow("验证码错误");
+                            canLogin=false;
+                            getCookieAndPicture();
+                        }
+                        if(line.indexOf("输入的密码有误")!=-1){
+                            ToastShow("输入的密码有误！");
+                            canLogin=false;
+                            getCookieAndPicture();
+                        }
+                        if(line.indexOf("账户或密码错误")!=-1){
+                            ToastShow("账户或密码错误");
+                            canLogin=false;
+                            getCookieAndPicture();
+                        }
+                    }
                     String[] cookieAll=response.header("Set-Cookie").split(";");
                     String cookie2=cookieAll[0];
                     Log.d("clp","经过千辛万苦得到的第二个cookie："+cookie2);
 
                     //接下来就是把信息传过去了。。
-                    Intent intent=new Intent(Ecard.this,EcardInfo.class);
-                    intent.putExtra("cookie",cookie);
-                    intent.putExtra("cookie2",cookie2);
-                    //把cookie2的值放入到cookie2中传给下一个活动
-                    startActivity(intent);
+                    if(canLogin){
+                        Intent intent=new Intent(Ecard.this,EcardInfo.class);
+                        intent.putExtra("cookie",cookie);
+                        intent.putExtra("cookie2",cookie2);
+                        //把cookie2的值放入到cookie2中传给下一个活动
+                        startActivity(intent);
+                    }
+
 
 
 
 
                 }catch (Exception e){
-                    ToastShow("超时");
+                    //ToastShow("发生错误");
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    @Override
+    protected void onStart() {//用户点击返回按钮返回的时候重新需要获取
+        super.onStart();
+        getCookieAndPicture();
     }
 }

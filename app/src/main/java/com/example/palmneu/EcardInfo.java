@@ -54,8 +54,8 @@ public class EcardInfo extends AppCompatActivity {
     private int TIME_OUT = 5;
     private int maxPage=0;
 
-    String startTime = null;
-    String endTime = null;
+    private String startTime = null;
+    private String endTime = null;
 
     private int currentYear = 0;
     private int currentMonth = 0;
@@ -71,6 +71,7 @@ public class EcardInfo extends AppCompatActivity {
 
     private String __VIEWSTATE = "";
     private String __EVENTVALIDATION ="";
+
     private String msg="";//用来存得到的消费记录
 
     @Override
@@ -251,6 +252,8 @@ public class EcardInfo extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                //  传入的信息形如  2017/3/5 11:45:01;餐费支出;9.00;110.30;虚拟职员;餐饮采集工作站;浑南三楼125#
+                //  分别是 时间，支出种类，支出钱数，支出后的余额，谁把你钱扣走的，在哪里扣走的，具体在哪里扣走的
                 String []item = msg.split(";");
                 String finalresult="";
                 for(int i=0;i<item.length;i++){
@@ -406,9 +409,7 @@ public class EcardInfo extends AppCompatActivity {
                         client = new OkHttpClient.Builder()
                                 .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
                                 .build();
-                        Log.d("clp","第二页开始上");
-                        Log.d("clp","第二次去查找的："+__VIEWSTATE);
-                        Log.d("clp","第二次去查找的："+__EVENTVALIDATION);
+                        Log.d("clp","现在开始查询的页码："+String.valueOf(i+1));
 
 
                         requestBody = new FormBody.Builder()
@@ -439,12 +440,7 @@ public class EcardInfo extends AppCompatActivity {
 
                         while ((line = reader.readLine()) != null) {
                             //Log.d("clp",line);
-                            if(line.indexOf("未查询到记录！")!=-1){
-                                ToastShow("未查询到记录");
-                                maxPage=0;
-                                //没有记录的时候当然是没有页面数啦
-                                break;
-                            }
+
                             if(line.indexOf("ContentPlaceHolder1_gridView_Label")!=-1){
                                 Document doc = Jsoup.parse(line);
                                 Elements elements = doc.select("span");
@@ -473,9 +469,7 @@ public class EcardInfo extends AppCompatActivity {
                                 //Log.d("clp", " __EVENTVALIDATION=" + __EVENTVALIDATION);
                             }
                         }
-                        Log.d("clp","第二页="+msg);
                     }
-
 
                     showFinalResult(msg);
                 } catch (Exception e) {

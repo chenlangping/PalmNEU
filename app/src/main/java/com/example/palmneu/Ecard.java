@@ -70,6 +70,8 @@ public class Ecard extends AppCompatActivity {
 
 
 
+        accountEdit.setText("20144830");
+        passwordEdit.setText("032015");
         getPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,8 +119,8 @@ public class Ecard extends AppCompatActivity {
 
     private void initView(){//初始化所有的组件
 
-        editor = getSharedPreferences("userdata", MODE_PRIVATE).edit();
-        preferences = getSharedPreferences("userdata", MODE_PRIVATE);
+        //editor = getSharedPreferences("userdata", MODE_PRIVATE).edit();
+        //preferences = getSharedPreferences("userdata", MODE_PRIVATE);
         accountEdit = (EditText) findViewById(R.id.account);
         passwordEdit = (EditText) findViewById(R.id.password);
         checkNumberEdit = (EditText) findViewById(R.id.check_number);
@@ -126,8 +128,8 @@ public class Ecard extends AppCompatActivity {
         getEcardInfo = (Button) findViewById(R.id.get_ecardinfo);
         progressBar=(ProgressBar)findViewById(R.id.progressbar);
         imageView = (ImageView) findViewById(R.id.check_picture);
-        accountEdit.setText(preferences.getString("account", ""));
-        passwordEdit.setText(preferences.getString("password", ""));
+        //accountEdit.setText(preferences.getString("account", ""));
+        //passwordEdit.setText(preferences.getString("password", ""));
 
     }
 
@@ -149,11 +151,11 @@ public class Ecard extends AppCompatActivity {
 
                     InputStream in=response.body().byteStream();
                     BufferedReader reader=new BufferedReader(new InputStreamReader(in));
-                    String line=null;
+                    String line="";
                     String __VIEWSTATEline=null;
                     String __EVENTVALIDATIONline=null;
                     while((line=reader.readLine())!=null){
-                        Log.d("clp",line);
+                        //Log.d("clp",line);
                         if(line.indexOf("__VIEWSTATE")!=-1){
                             __VIEWSTATEline=line;
                         }

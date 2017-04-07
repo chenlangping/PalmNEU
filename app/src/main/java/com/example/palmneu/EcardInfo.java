@@ -36,14 +36,15 @@ import okhttp3.ResponseBody;
 
 public class EcardInfo extends AppCompatActivity {
 
-    private String cookie = null;
-    private String cookie2 = null;
-    private String cookie3 = null;
+    private String cookie = "";
+    private String cookie2 = "";
+    private String cookie3 = "";
 
-    private TextView textView = null;
-    private TextView textViewStartTime = null;
-    private TextView textViewEndTime = null;
-    private TextView finalitem=null;
+    private TextView textView = null;//用来显示卡主的信息
+    private TextView textViewStartTime = null;//用来显示用户选择的开始世界
+    private TextView textViewEndTime = null;//用来显示用户选择的结束时间
+    private TextView finalitem=null;//用来显示用户的消费记录
+
     private Button button = null;
     private Button setStartTime = null;
     private Button setEndTime = null;
@@ -51,6 +52,7 @@ public class EcardInfo extends AppCompatActivity {
     private Bitmap bitmap = null; //头像
 
     private int TIME_OUT = 5;
+    private int maxPage=0;
 
     String startTime = null;
     String endTime = null;
@@ -67,9 +69,9 @@ public class EcardInfo extends AppCompatActivity {
     private int endMonth = 0;
     private int endDay = 0;
 
-    private String __VIEWSTATE1 = null;
-    private String __EVENTVALIDATION1 = null;
-    private String msg=null;//用来存得到的消费记录
+    private String __VIEWSTATE = "";
+    private String __EVENTVALIDATION ="";
+    private String msg="";//用来存得到的消费记录
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +79,15 @@ public class EcardInfo extends AppCompatActivity {
         setContentView(R.layout.activity_ecard_info);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
         initView();
         initData();
+
         Intent intent = getIntent();
         cookie = intent.getStringExtra("cookie");
         cookie2 = intent.getStringExtra("cookie2");
         cookie3 = cookie + "; .NECEID=1; .NEWCAPEC1=$newcapec$:zh-CN_CAMPUS; " + cookie2;
+
         Log.d("clp", "获取到的cookie:" + cookie);
         Log.d("clp", "获取到的cookie2:" + cookie2);
         Log.d("clp", "拼接得到的最后的cookie=" + cookie3);
@@ -164,6 +169,9 @@ public class EcardInfo extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                InputStream in=null;
+                BufferedReader reader=null;
+                String line="";
                 try {
 
                     /***********************首先需要登录到index.aspx************************/
@@ -177,12 +185,6 @@ public class EcardInfo extends AppCompatActivity {
                             .build();
 
                     Response response = client.newCall(request).execute();
-                    InputStream in = response.body().byteStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        //Log.d("clp",line);
-                    }
 
                     /*************************下面开始获取登录信息啦**********************/
 
@@ -229,36 +231,6 @@ public class EcardInfo extends AppCompatActivity {
                     bitmap = BitmapFactory.decodeStream(in);
                     showPicture(bitmap);
 
-
-//                    /*************************下面开始预读取数据*************************/
-//                    //注意 这里需要获取以下两个值，是为了接下来的使用
-//                    //__VIEWSTATE1
-//                    //__EVENTVALIDATION1
-//                    OkHttpClient client4 = new OkHttpClient();
-//
-//                    Request request4 = new Request.Builder()
-//                            .url("http://ecard.neu.edu.cn/SelfSearch/User/ConsumeInfo.aspx")
-//                            .addHeader("Cookie", cookie3)
-//                            .addHeader("Referer", "http://ecard.neu.edu.cn/SelfSearch/Index.aspx")
-//                            .addHeader("Connection", "keep-alive")
-//                            .addHeader("Upgrade-Insecure-Requests", "1")
-//                            .build();
-//
-//                    Response response4 = client4.newCall(request4).execute();
-//                    in = response4.body().byteStream();
-//                    reader = new BufferedReader(new InputStreamReader(in));
-//                    while ((line = reader.readLine()) != null) {
-//                        if (line.indexOf("__VIEWSTATE") != -1) {
-//                            __VIEWSTATE1 = line.substring(line.indexOf("value=") + 7, line.length() - 4);
-//                            Log.d("clp", " __VIEWSTATE1=" + __VIEWSTATE1);
-//                        }
-//                        if (line.indexOf("__EVENTVALIDATION") != -1) {
-//                            __EVENTVALIDATION1 = line.substring(line.indexOf("value=") + 7, line.length() - 4);
-//                            Log.d("clp", " __EVENTVALIDATION1=" + __EVENTVALIDATION1);
-//                        }
-//                    }
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -299,6 +271,11 @@ public class EcardInfo extends AppCompatActivity {
 
         timeCheck();
 
+        msg="";
+        //msg是用来存放用户的所有的消费记录，所以在点击查询的时候需要先清空
+        maxPage=1;
+        //用来显示用户查询数据的页数
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -306,13 +283,11 @@ public class EcardInfo extends AppCompatActivity {
                 InputStream in=null;
                 String line=null;
                 BufferedReader reader=null;
-
-                //又要开始去查数据了
                 try {
                     /*************************下面开始预读取数据*************************/
                     //注意 这里需要获取以下两个值，是为了接下来的使用
-                    //__VIEWSTATE1
-                    //__EVENTVALIDATION1
+                    //__VIEWSTATE
+                    //__EVENTVALIDATION
                     OkHttpClient client4 = new OkHttpClient();
 
                     Request request4 = new Request.Builder()
@@ -328,12 +303,12 @@ public class EcardInfo extends AppCompatActivity {
                     reader = new BufferedReader(new InputStreamReader(in));
                     while ((line = reader.readLine()) != null) {
                         if (line.indexOf("__VIEWSTATE") != -1) {
-                            __VIEWSTATE1 = line.substring(line.indexOf("value=") + 7, line.length() - 4);
-                            Log.d("clp", " __VIEWSTATE1=" + __VIEWSTATE1);
+                            __VIEWSTATE = line.substring(line.indexOf("value=") + 7, line.length() - 4);
+                            Log.d("clp", " 预读取获得的__VIEWSTATE1=" + __VIEWSTATE);
                         }
                         if (line.indexOf("__EVENTVALIDATION") != -1) {
-                            __EVENTVALIDATION1 = line.substring(line.indexOf("value=") + 7, line.length() - 4);
-                            Log.d("clp", " __EVENTVALIDATION1=" + __EVENTVALIDATION1);
+                            __EVENTVALIDATION = line.substring(line.indexOf("value=") + 7, line.length() - 4);
+                            Log.d("clp", " 预读取获得的__EVENTVALIDATION1=" + __EVENTVALIDATION);
                         }
                     }
 
@@ -342,17 +317,15 @@ public class EcardInfo extends AppCompatActivity {
                             .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
                             .build();
 
-                    Log.d("clp",__VIEWSTATE1);
-                    Log.d("clp",__EVENTVALIDATION1);
-                    Log.d("clp",startTime);
-                    Log.d("clp",endTime);
-                    Log.d("clp","现在开始构造");
+                    Log.d("clp","第一次查找用的："+__VIEWSTATE);
+                    Log.d("clp","第一次查找用的："+__EVENTVALIDATION);
+
 
                     RequestBody requestBody = new FormBody.Builder()
                             .add("__EVENTTARGET", "")
                             .add("__EVENTARGUMENT", "")
-                            .add("__VIEWSTATE", __VIEWSTATE1)
-                            .add("__EVENTVALIDATION", __EVENTVALIDATION1)
+                            .add("__VIEWSTATE", __VIEWSTATE)
+                            .add("__EVENTVALIDATION", __EVENTVALIDATION)
                             .add("ctl00$ContentPlaceHolder1$rbtnType", "0")
                             .add("ctl00$ContentPlaceHolder1$txtStartDate", startTime)
                             .add("ctl00$ContentPlaceHolder1$txtEndDate", endTime)
@@ -370,17 +343,18 @@ public class EcardInfo extends AppCompatActivity {
                             .post(requestBody)
                             .build();
 
-
-
-
                     Response response = client.newCall(request).execute();
-
                     in = response.body().byteStream();
                     reader = new BufferedReader(new InputStreamReader(in));
-
                     msg="";
                     while ((line = reader.readLine()) != null) {
-                        Log.d("clp",line);
+                        //Log.d("clp",line);
+                        if(line.indexOf("未查询到记录！")!=-1){
+                            ToastShow("未查询到记录");
+                            maxPage=0;
+                            //没有记录的时候当然是没有页面数啦
+                            break;
+                        }
                         if(line.indexOf("ContentPlaceHolder1_gridView_Label")!=-1){
                             Document doc = Jsoup.parse(line);
                             Elements elements = doc.select("span");
@@ -399,12 +373,111 @@ public class EcardInfo extends AppCompatActivity {
                             }
                             //这是因为没有table标签的td tr标签jsoup不解析。。所以曲线救国 我给它加了table。。
                         }
+
+                        if(line.indexOf("<a disabled=\"true\">&lt;&lt;</a><a disabled=\"true\">")!=-1){
+                            Log.d("clp",line);
+                            Document doc = Jsoup.parse(line);
+                            Elements elements = doc.select("a");
+                            for (Element element : elements) {
+                                String name = element.text();
+                                if( (name.indexOf("<")==-1) &&( name.indexOf(">")==-1 ) &&(name.indexOf("...")==-1)){
+                                    maxPage=Integer.parseInt(name);
+                                }
+                                if(name.indexOf("...")!=-1){
+                                    ToastShow("信息量有点大，只显示一部分");
+                                }
+                                //Log.d("clp",name);
+                            }
+                        }
+                        if (line.indexOf("__VIEWSTATE") != -1) {
+                            __VIEWSTATE = line.substring(line.indexOf("value=") + 7, line.length() - 4);
+                            Log.d("clp", " 第一次查找得到的__VIEWSTATE=" + __VIEWSTATE);
+                        }
+                        if (line.indexOf("__EVENTVALIDATION") != -1) {
+                            __EVENTVALIDATION = line.substring(line.indexOf("value=") + 7, line.length() - 4);
+                            Log.d("clp", "第一次查找得到的__EVENTVALIDATION=" + __EVENTVALIDATION);
+                        }
+                    }
+                    Log.d("clp","得到的最大页数="+String.valueOf(maxPage));
+                    Log.d("clp","第一页="+msg);
+
+                    /**********************接下来获取除第一页的信息*********************************/
+                    for(int i=1;i<maxPage;i++){
+                        client = new OkHttpClient.Builder()
+                                .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
+                                .build();
+                        Log.d("clp","第二页开始上");
+                        Log.d("clp","第二次去查找的："+__VIEWSTATE);
+                        Log.d("clp","第二次去查找的："+__EVENTVALIDATION);
+
+
+                        requestBody = new FormBody.Builder()
+                                .add("__EVENTTARGET", "ctl00$ContentPlaceHolder1$AspNetPager1")
+                                .add("__EVENTARGUMENT", String.valueOf(i+1))
+                                .add("__VIEWSTATE", __VIEWSTATE)
+                                .add("__EVENTVALIDATION", __EVENTVALIDATION)
+                                .add("ctl00$ContentPlaceHolder1$rbtnType", "0")
+                                .add("ctl00$ContentPlaceHolder1$txtStartDate", startTime)
+                                .add("ctl00$ContentPlaceHolder1$txtEndDate", endTime)
+                                //.addEncoded("ctl00$ContentPlaceHolder1$btnSearch", "查++询")
+                                //注意最后一句话的addEncoded 因为有中文参数
+                                .build();
+
+                        request = new Request.Builder()
+                                .url("http://ecard.neu.edu.cn/SelfSearch/User/ConsumeInfo.aspx")
+                                .addHeader("Cookie", cookie3)
+                                .addHeader("Referer", "http://ecard.neu.edu.cn/SelfSearch/User/ConsumeInfo.aspx")
+                                .addHeader("Connection", "keep-alive")
+                                .addHeader("Upgrade-Insecure-Requests", "1")
+                                .addHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8")
+                                .post(requestBody)
+                                .build();
+
+                        response = client.newCall(request).execute();
+                        in = response.body().byteStream();
+                        reader = new BufferedReader(new InputStreamReader(in));
+
+                        while ((line = reader.readLine()) != null) {
+                            //Log.d("clp",line);
+                            if(line.indexOf("未查询到记录！")!=-1){
+                                ToastShow("未查询到记录");
+                                maxPage=0;
+                                //没有记录的时候当然是没有页面数啦
+                                break;
+                            }
+                            if(line.indexOf("ContentPlaceHolder1_gridView_Label")!=-1){
+                                Document doc = Jsoup.parse(line);
+                                Elements elements = doc.select("span");
+                                for (Element element : elements) {
+                                    String name = element.text();
+                                    msg = msg + name + ';';
+                                }
+                            }
+                            if(line.indexOf("支出")!=-1){
+                                line="<table>"+line.substring(line.indexOf("</td>")+5,line.length())+"</table>";
+                                Document doc = Jsoup.parse(line);
+                                Elements elements = doc.select("td");
+                                for (Element element : elements) {
+                                    String name = element.text();
+                                    msg = msg + name + ';';
+                                }
+                                //这是因为没有table标签的td tr标签jsoup不解析。。所以曲线救国 我给它加了table。。
+                            }
+
+                            if (line.indexOf("__VIEWSTATE") != -1) {
+                                __VIEWSTATE = line.substring(line.indexOf("value=") + 7, line.length() - 4);
+                                //Log.d("clp", " __VIEWSTATE=" + __VIEWSTATE);
+                            }
+                            if (line.indexOf("__EVENTVALIDATION") != -1) {
+                                __EVENTVALIDATION = line.substring(line.indexOf("value=") + 7, line.length() - 4);
+                                //Log.d("clp", " __EVENTVALIDATION=" + __EVENTVALIDATION);
+                            }
+                        }
+                        Log.d("clp","第二页="+msg);
                     }
 
-                    Log.d("clp",msg);
 
                     showFinalResult(msg);
-
                 } catch (Exception e) {
                     ToastShow("发生错误");
                     e.printStackTrace();
@@ -413,9 +486,8 @@ public class EcardInfo extends AppCompatActivity {
         }).start();
 
     }
-
     private void timeCheck() {//该函数的作用是确保生成 2017-01-01这样的时间
-        startTime = null;
+        startTime = "";
         startTime = String.valueOf(startYear);
 
         if (startMonth < 10) {
@@ -433,7 +505,7 @@ public class EcardInfo extends AppCompatActivity {
         Log.d("clp", "开始时间=" + startTime);
 
 
-        endTime = null;
+        endTime = "";
 
         endTime = String.valueOf(endYear);
 

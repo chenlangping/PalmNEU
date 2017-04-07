@@ -68,9 +68,7 @@ public class Ecard extends AppCompatActivity {
         initView();
         getCookieAndPicture();
 
-        accountEdit.setText("20144835");
-        passwordEdit.setText("036518");
-        //省的我每次输入
+
 
         getPicture.setOnClickListener(new View.OnClickListener() {
             @Override

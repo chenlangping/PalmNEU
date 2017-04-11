@@ -267,11 +267,13 @@ public class EcardInfo extends AppCompatActivity {
             public void run() {
                 //  传入的信息形如  2017/3/5 11:45:01;餐费支出;9.00;110.30;虚拟职员;餐饮采集工作站;浑南三楼125#
                 //  分别是 时间，支出种类，支出钱数，支出后的余额，谁把你钱扣走的，在哪里扣走的，具体在哪里扣走的
+
                 String[] item = msg.split(";");
                 String finalresult = "";
                 for (int i = 0; i < item.length; i++) {
                     if (i % 7 == 0) {
                         finalresult = finalresult + "\n";
+
                     }
                     if (i % 7 == 0 || i % 7 == 1 || i % 7 == 2 || i % 7 == 3 || i % 7 == 6) {
                         finalresult = finalresult + item[i] + " ";
@@ -279,6 +281,8 @@ public class EcardInfo extends AppCompatActivity {
 
                 }
                 finalitem.setText(finalresult);
+                Log.d("clp","总记录数为："+String.valueOf(item.length/7.0));
+
             }
         });
     }
@@ -398,7 +402,7 @@ public class EcardInfo extends AppCompatActivity {
                                     maxPage = Integer.parseInt(name);
                                 }
                                 if (name.indexOf("...") != -1) {
-                                    ToastShow("信息量有点大，只显示一部分");
+                                    ToastShow("信息量有点大，请稍等");
                                 }
                                 //Log.d("clp",name);
                             }

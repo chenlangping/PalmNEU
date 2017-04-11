@@ -341,5 +341,7 @@ public class Ecard extends AppCompatActivity {
     protected void onStart() {//用户点击返回按钮返回的时候重新需要获取
         super.onStart();
         getCookieAndPicture();
+        checkNumberEdit.setText("");
+        //因为验证码肯定已经刷新了 ，所以帮用户去掉
     }
 }

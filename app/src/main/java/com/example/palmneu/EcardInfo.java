@@ -416,15 +416,15 @@ public class EcardInfo extends AppCompatActivity {
                             Log.d("clp", "第一次查找得到的__EVENTVALIDATION=" + __EVENTVALIDATION);
                         }
                     }
-                    Log.d("clp", "得到的最大页数=" + String.valueOf(maxPage));
-                    Log.d("clp", "第一页=" + msg);
+                    //Log.d("clp", "得到的最大页数=" + String.valueOf(maxPage));
+                    //Log.d("clp", "第一页=" + msg);
 
                     /**********************接下来获取除第一页的信息*********************************/
                     for (int i = 1; i < maxPage; i++) {
                         client = new OkHttpClient.Builder()
                                 .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
                                 .build();
-                        Log.d("clp", "现在开始查询的页码：" + String.valueOf(i + 1));
+                        //Log.d("clp", "现在开始查询的页码：" + String.valueOf(i + 1));
 
 
                         requestBody = new FormBody.Builder()

@@ -27,6 +27,15 @@ public class ContactsFragment extends Fragment {
 				startActivity(intent);
 			}
 		});
+
+		Button button1 =(Button)getActivity().findViewById(R.id.send_note);
+		button1.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent=new Intent(getActivity(),SendNote.class);
+				startActivity(intent);
+			}
+		});
 	}
 
 }

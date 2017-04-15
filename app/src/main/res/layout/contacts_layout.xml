@@ -15,6 +15,12 @@
             android:id="@+id/see_note"
             android:text="查看帖子"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/send_note"
+            android:text="发送帖子"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

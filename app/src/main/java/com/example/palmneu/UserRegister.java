@@ -52,48 +52,48 @@ public class UserRegister extends AppCompatActivity {
                 nickname = nickNameEdit.getText().toString();
                 emailaddress = emailAddressEdit.getText().toString();
 
-                //sendRegisterMessageToServer(account, password, nickname, emailaddress);
+                sendRegisterMessageToServer(account, password, nickname, emailaddress);
 
                 //userName=chenlangping&nickName=chenlangping&emailAddress=328566&passWord=98
                 //密码确认
-                while (!ensurePassword(password,ensurepassword)) {
-                    showToast("你两次输入的密码不一样，重新输入确认密码");
-                }
-                //重新输入确认密码后点击注册button
-
-                    switch (check(account, password, nickname, emailaddress)){
-                    case 1:
-                        sendRegisterMessageToServer(account, password, nickname, emailaddress);
-                        break;
-                    case 2:
-                        showToast("账户长度必须为6-18位");
-                        break;
-                    case 3:
-                        showToast("账户中存在非法字符");
-                        break;
-                    case 4:
-                        showToast("密码长度必须为6-16位");
-                        break;
-                    case 5:
-                        showToast("昵称长度必须为6-18位");
-                        break;
-                    case 6:
-                        showToast("昵称中存在非法字符");
-                        break;
-                    case 7:
-                        showToast("邮箱地址长度非法");
-                        break;
-                    case 8:
-                        showToast("邮箱地址中存在非法字符");
-                        break;
-                    case 9:
-                        showToast("邮箱地址非法");
-                        break;
-                    case 10:
-                        showToast("发生未知错误");
-                        break;
-
-                }
+//                while (!ensurePassword(password,ensurepassword)) {
+//                    showToast("你两次输入的密码不一样，重新输入确认密码");
+//                }
+//                //重新输入确认密码后点击注册button
+//
+//                    switch (check(account, password, nickname, emailaddress)){
+//                    case 1:
+//                        sendRegisterMessageToServer(account, password, nickname, emailaddress);
+//                        break;
+//                    case 2:
+//                        showToast("账户长度必须为6-18位");
+//                        break;
+//                    case 3:
+//                        showToast("账户中存在非法字符");
+//                        break;
+//                    case 4:
+//                        showToast("密码长度必须为6-16位");
+//                        break;
+//                    case 5:
+//                        showToast("昵称长度必须为6-18位");
+//                        break;
+//                    case 6:
+//                        showToast("昵称中存在非法字符");
+//                        break;
+//                    case 7:
+//                        showToast("邮箱地址长度非法");
+//                        break;
+//                    case 8:
+//                        showToast("邮箱地址中存在非法字符");
+//                        break;
+//                    case 9:
+//                        showToast("邮箱地址非法");
+//                        break;
+//                    case 10:
+//                        showToast("发生未知错误");
+//                        break;
+//
+//                }
 
             }
         });

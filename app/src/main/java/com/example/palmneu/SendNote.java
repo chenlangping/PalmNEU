@@ -73,12 +73,14 @@ public class SendNote extends AppCompatActivity {
                             .url(new DataClass().serveraddress + "add_note.php")
                             .post(requestBody)
                             .build();
+
                     Response response= client.newCall(request).execute();
                     String responseData= response.body().string();
                     Log.d("clp",responseData);
 
                     if(responseData.indexOf("INTODBS")!=-1){
                         ToastShow("发帖成功！");
+                        finish();
                         Intent intent =new Intent(SendNote.this,Note.class);
                         startActivity(intent);
                     }else if(responseData.indexOf("PWDWORNG")!=-1){

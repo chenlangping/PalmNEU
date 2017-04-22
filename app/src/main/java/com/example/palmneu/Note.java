@@ -81,7 +81,7 @@ public class Note extends AppCompatActivity {
 
 
                     //测试用字符串
-                    //responseDate ="ID#userName#time#noteTitle#@ID#userName#time#noteTitle#noteContent@ID#userName#time#noteTitle#noteContent@";
+//                    responseDate ="ID#userName#time#noteTitle#@ID#userName#time#noteTitle#noteContent@ID#userName#time#noteTitle#noteContent@";
 
                     noteMessage = responseDate.split("@");
                     Log.d("clp", responseDate);

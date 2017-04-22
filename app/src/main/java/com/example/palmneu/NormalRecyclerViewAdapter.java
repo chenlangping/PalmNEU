@@ -30,9 +30,9 @@ public class NormalRecyclerViewAdapter extends RecyclerView.Adapter<NormalRecycl
     @Override
     public NormalTextViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 //        return new NormalTextViewHolder(mLayoutInflater.inflate(R.layout.activity_note, parent, false));
-        View view= LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.note_item,parent,false);
-        NormalTextViewHolder normalTextViewHolder=new NormalTextViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.note_item, parent, false);
+        NormalTextViewHolder normalTextViewHolder = new NormalTextViewHolder(view);
         return normalTextViewHolder;
     }
 

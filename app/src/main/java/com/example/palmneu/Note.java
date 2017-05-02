@@ -8,7 +8,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -110,8 +112,24 @@ public class Note extends AppCompatActivity {
 
                 mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));//这里用线性显示 类似于listview
-                mRecyclerView.setAdapter(new NormalRecyclerViewAdapter(noteMessage));
+                NormalRecyclerViewAdapter mAdapter =new NormalRecyclerViewAdapter(noteMessage);
+                mRecyclerView.setAdapter(mAdapter);
                 mRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),DividerItemDecoration.VERTICAL_LIST));
+                mAdapter.setOnItemClickListener(new NormalRecyclerViewAdapter.OnItemClickListener(){
+                    @Override
+                    public void onItemClick(View view , int position){
+                        ToastShow(noteMessage[position].split("#")[0]);
+                    }
+                });
+            }
+        });
+    }
+
+    private void ToastShow(final String string) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(Note.this, string, Toast.LENGTH_SHORT).show();
             }
         });
     }

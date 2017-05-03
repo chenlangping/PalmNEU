@@ -36,20 +36,31 @@
         android:layout_height="wrap_content"
         android:id="@+id/addpic" />
 
-    <ImageView
-        android:id="@+id/picture1"
-        android:layout_width="220dp"
-        android:layout_height="150dp"
-        android:src="@drawable/common_google_signin_btn_text_dark"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/picture1"
+            android:layout_weight="1"
+            android:layout_width="96dp"
+            android:layout_height="151dp"
+            android:src="@drawable/common_google_signin_btn_text_dark"/>
 
-    <ImageView
-        android:id="@+id/picture2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <ImageView
-        android:id="@+id/picture3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+        <ImageView
+            android:id="@+id/picture2"
+            android:layout_weight="1"
+            android:layout_width="96dp"
+            android:layout_height="151dp"
+            android:src="@drawable/common_google_signin_btn_text_dark"/>
+
+        <ImageView
+            android:id="@+id/picture3"
+            android:layout_weight="1"
+            android:layout_width="96dp"
+            android:layout_height="151dp"
+            android:src="@drawable/common_google_signin_btn_text_dark"
+            />
+    </LinearLayout>
+
 
 </LinearLayout>

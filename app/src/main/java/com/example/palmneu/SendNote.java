@@ -59,6 +59,7 @@ public class SendNote extends AppCompatActivity {
 
 
     //三个显示图片的
+    private int picNum = 0;
     private ImageView pic1 = null;
     private ImageView pic2 = null;
     private ImageView pic3 = null;
@@ -74,6 +75,7 @@ public class SendNote extends AppCompatActivity {
         initView();
         userName = "chen";
         passWord = "1234";
+        picNum = 0;
         //TODO 用来测试，直接取固定值，以后改
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -251,7 +253,22 @@ public class SendNote extends AppCompatActivity {
     private void displayImage(String imagePath) {
         if (imagePath != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-            pic2.setImageBitmap(bitmap);
+            switch (picNum) {
+                case 0:
+                    pic1.setImageBitmap(bitmap);
+                    picNum++;
+                    break;
+                case 1:
+                    pic2.setImageBitmap(bitmap);
+                    picNum++;
+                    break;
+                case 2:
+                    pic3.setImageBitmap(bitmap);
+                    picNum++;
+                    break;
+                default:
+                    ToastShow("没有位置显示照片了");
+            }
         } else {
             Toast.makeText(this, "failed to get image", Toast.LENGTH_SHORT).show();
         }
@@ -261,7 +278,23 @@ public class SendNote extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                pic1.setImageBitmap(bitmap);
+                switch (picNum) {
+                    case 0:
+                        pic1.setImageBitmap(bitmap);
+                        picNum++;
+                        break;
+                    case 1:
+                        pic2.setImageBitmap(bitmap);
+                        picNum++;
+                        break;
+                    case 2:
+                        pic3.setImageBitmap(bitmap);
+                        picNum++;
+                        break;
+                    default:
+                        ToastShow("没有位置显示照片了");
+                }
+
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.example.palmneu;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -119,6 +120,15 @@ public class Note extends AppCompatActivity {
                     @Override
                     public void onItemClick(View view , int position){
                         ToastShow(noteMessage[position].split("#")[0]);
+                        Log.d("clp","ID为："+String.valueOf(noteMessage[position].split("#")[0]));
+                        Intent intent=new Intent(getApplication(),ReplyNote.class);
+                        intent.putExtra("ID",String.valueOf(noteMessage[position].split("#")[0]));
+                        intent.putExtra("userName",String.valueOf(noteMessage[position].split("#")[1]));
+                        intent.putExtra("time",String.valueOf(noteMessage[position].split("#")[2]));
+                        intent.putExtra("noteTitle",String.valueOf(noteMessage[position].split("#")[3]));
+                        intent.putExtra("noteContent",String.valueOf(noteMessage[position].split("#")[4]));
+                        startActivity(intent);
+
                     }
                 });
             }

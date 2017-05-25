@@ -63,6 +63,8 @@
 
         <activity android:name=".Note" />
         <activity android:name=".Ecard" />
+        <activity android:name=".Library" />
+        <activity android:name=".LibraryInfo" />
         <activity android:name=".EcardInfo" />
         <activity android:name=".SendNote"></activity>
 

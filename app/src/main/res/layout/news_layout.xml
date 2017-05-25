@@ -18,12 +18,22 @@
             android:text="功能扩展"
             android:textSize="20sp" />
 
+
+
     </LinearLayout>
 
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/getlibrary"
+            android:text="图书馆查询"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="33dp" />
 
         <Button
             android:layout_width="wrap_content"

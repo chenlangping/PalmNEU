@@ -6,11 +6,12 @@
     tools:context="com.example.palmneu.LibraryInfo">
 
 
-<TextView
+    <TextView
         android:text="TextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/viewUserInfo" />
+        android:id="@+id/viewUserInfo"
+        android:scrollbars="vertical"/>
 
     <Button
         android:text="未还图书"

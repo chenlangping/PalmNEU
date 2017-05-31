@@ -11,8 +11,6 @@ public class DataClass {
 
     public String serveraddress="http://123.207.139.148/";
 
-    //有两个地址 一个是 http://123.207.174.211/  还有一个是http://123.207.139.148
-
     public String ecardUrl="http://ecard.neu.edu.cn/";
 
 }

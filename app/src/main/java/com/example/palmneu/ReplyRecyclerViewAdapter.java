@@ -32,7 +32,7 @@ public class ReplyRecyclerViewAdapter extends RecyclerView.Adapter<ReplyRecycler
     }
 
 
-    private NormalRecyclerViewAdapter.OnItemClickListener mOnItemClickListener = null;
+    private ReplyRecyclerViewAdapter.OnItemClickListener mOnItemClickListener = null;
 
 
     //define interface

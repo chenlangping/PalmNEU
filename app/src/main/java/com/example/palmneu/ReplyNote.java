@@ -3,8 +3,11 @@ package com.example.palmneu;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,6 +27,11 @@ public class ReplyNote extends AppCompatActivity {
     private String time=null;
     private String noteTitle=null;
     private String noteContent=null;
+
+    //陈瑜峰做显示用到的
+    private RecyclerView mRecyclerView = null;
+    private ArrayAdapter<String> adapter = null;
+    String[] noteMessage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +58,7 @@ public class ReplyNote extends AppCompatActivity {
     private void initViews(){
         button=(Button)findViewById(R.id.button);
         editText=(EditText)findViewById(R.id.edittext);
+        mRecyclerView = (RecyclerView)findViewById(R.id.reply_recycler_view);
     }
 
     private void initData(){
@@ -134,8 +143,14 @@ public class ReplyNote extends AppCompatActivity {
                     //TODO 这里的responseData就是需要放在列表里的数据
 
                     Log.d("clp",responseDate);
+                    //chen#2017-05-19 19:20:41#测试@chen#2017-05-19 20:28:26#测试2@chen#2017-05-19 20:28:29#测试3@chen#2017-05-19 20:28:30#测试4@chen#2017-06-10 14:58:33#@chen#2017-06-10 14:58:52#huitiela@chen#2017-06-10 14:59:29#huitiela@chen#2017-06-10 15:01:48#huitiela@
+                    noteMessage =responseDate.split("@");
 
-
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));//这里用线性显示 类似于listview
+                    ReplyRecyclerViewAdapter mAdapter =new ReplyRecyclerViewAdapter(noteMessage);
+                    mRecyclerView.setAdapter(mAdapter);
+                    mRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),DividerItemDecoration.VERTICAL_LIST));
+//
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

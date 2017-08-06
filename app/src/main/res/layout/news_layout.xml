@@ -23,12 +23,27 @@
     </LinearLayout>
 
 
+    <Button
+        android:text="图片上传"
+        android:layout_width="49dp"
+        android:layout_height="147dp"
+        android:id="@+id/news_pic" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ecard"
+        android:text="校园卡消费记录"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="33dp"
+        android:layout_weight="1" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="57dp"
             android:layout_height="wrap_content"
             android:id="@+id/getlibrary"
             android:text="图书馆查询"
@@ -43,13 +58,6 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="33dp" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ecard"
-            android:text="校园卡消费记录"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="33dp" />
     </LinearLayout>
 
 

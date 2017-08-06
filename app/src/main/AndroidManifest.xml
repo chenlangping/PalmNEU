@@ -68,6 +68,9 @@
         <activity android:name=".LibraryInfo" />
         <activity android:name=".EcardInfo" />
         <activity android:name=".SendNote" />
+        <activity android:name=".UploadActicity" />
+        <activity android:name=".SelectPicActivity" />
+
 
         <provider
             android:name="android.support.v4.content.FileProvider"

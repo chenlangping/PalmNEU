@@ -46,6 +46,15 @@ public class NewsFragment extends Fragment {
 				startActivity(intent);
 			}
 		});
+
+		Button button4 = (Button)getActivity().findViewById(R.id.news_pic);
+		button4.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent=new Intent(getActivity(),UploadActicity.class);
+				startActivity(intent);
+			}
+		});
 	}
 
 }
